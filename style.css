@@ -74,8 +74,9 @@ p {
 }
 
 .navbar-search {
-    width: 230px;
+    width: 280px;
 }
+
 
 
 /* ================= PHẦN ĐẦU TRANG ================= */
@@ -210,22 +211,32 @@ p {
     padding: 85px 0;
 }
 
-.category-tabs {
+/* ===== Problem 02: Thanh điều khiển (tabs + sort) ===== */
+
+.course-controls {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
     margin-bottom: 40px;
 }
 
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .category-button {
-    padding: 10px 20px;
+    padding: 9px 20px;
     border: 1px solid #dee2e6;
     border-radius: 30px;
     background-color: #ffffff;
     color: #495057;
     font-weight: 600;
-    transition: 0.2s;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .category-button:hover,
@@ -233,6 +244,84 @@ p {
     border-color: #0d6efd;
     background-color: #0d6efd;
     color: #ffffff;
+}
+
+/* Sort dropdown */
+.sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sort-label {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0;
+}
+
+.sort-select {
+    padding: 8px 14px;
+    border: 1px solid #dee2e6;
+    border-radius: 30px;
+    background-color: #ffffff;
+    color: #495057;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    min-width: 185px;
+    transition: border-color 0.2s;
+}
+
+.sort-select:focus {
+    border-color: #0d6efd;
+}
+
+/* Nút xóa nhanh (✕) bên trong ô tìm kiếm navbar */
+.search-clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 2px 5px;
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.search-clear-btn:hover {
+    color: #212529;
+}
+
+/* Thông báo không tìm thấy kết quả */
+.no-result-message {
+    width: 100%;
+    padding: 70px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.no-result-icon {
+    margin-bottom: 16px;
+    font-size: 56px;
+}
+
+.no-result-message h3 {
+    margin-bottom: 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #343a40;
+}
+
+.no-result-message p {
+    font-size: 15px;
+    margin: 0;
 }
 
 .course-card {
@@ -717,5 +806,20 @@ p {
     .lesson-item {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    /* Problem 02: mobile — controls xếp dọc */
+    .course-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sort-wrapper {
+        width: 100%;
+    }
+
+    .sort-select {
+        flex: 1;
+        min-width: unset;
     }
 }
