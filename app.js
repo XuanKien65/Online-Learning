@@ -374,26 +374,16 @@ function createCourseCard(course) {
 }
 
 
-// Hiển thị tất cả khóa học lên trang index.html.
+// Render tất cả card lên lưới, ẩn card không khớp theo đề bài (không xóa khỏi DOM).
 function renderCourseCards() {
     const coursesGrid = document.getElementById("coursesGrid");
 
-    /*
-        Trang course-detail.html không có phần tử coursesGrid.
-
-        Vì vậy, nếu không tìm thấy coursesGrid thì hàm sẽ dừng lại
-        để tránh xảy ra lỗi JavaScript.
-    */
+    // Thoát nếu không có lưới (trang course-detail.html không có phần tử này).
     if (!coursesGrid) {
         return;
     }
 
-    /*
-        map() duyệt qua từng khóa học và chuyển mỗi khóa học
-        thành một đoạn mã HTML.
-
-        join("") nối tất cả các đoạn HTML lại với nhau.
-    */
+    // Render toàn bộ 6 card lần đầu tiên khi trang tải.
     coursesGrid.innerHTML = courses
         .map(function (course) {
             return createCourseCard(course);
@@ -402,18 +392,182 @@ function renderCourseCards() {
 }
 
 
-// Chạy hàm hiển thị khóa học sau khi HTML đã tải xong.
-document.addEventListener(
-    "DOMContentLoaded",
-    renderCourseCards
-);
+// ============================================================
+// PROBLEM 02 — Live Search, Category Filter & Sort
+// ============================================================
+
+// Biến debounce — dùng để trì hoãn tìm kiếm khi người dùng gõ nhanh.
+var searchDebounceTimer = null;
+
+// Lấy từ khóa tìm kiếm hiện tại từ input, chuyển về chữ thường để so sánh.
+function getSearchKeyword() {
+    var input = document.getElementById("navbarSearchInput");
+    return input ? input.value.trim().toLowerCase() : "";
+}
+
+// Lấy danh mục đang active từ các tab (đọc data-category trên button).
+function getActiveCategory() {
+    var activeBtn = document.querySelector("#categoryTabs .category-button.active");
+    return activeBtn ? activeBtn.dataset.category : "all";
+}
+
+// Lấy giá trị sắp xếp từ dropdown.
+function getSortValue() {
+    var select = document.getElementById("sortSelect");
+    return select ? select.value : "default";
+}
+
+/*
+    Hàm trung tâm Problem 02: kết hợp search + filter + sort rồi cập nhật giao diện.
+    Theo đề bài: card không khớp bị ẨN (display:none), KHÔNG xóa khỏi DOM.
+*/
+function applySearchFilterSort() {
+    var coursesGrid = document.getElementById("coursesGrid");
+    if (!coursesGrid) {
+        return;
+    }
+
+    var keyword  = getSearchKeyword();
+    var category = getActiveCategory();
+    var sortVal  = getSortValue();
+
+    // Bước 1: Xác định khóa học nào khớp điều kiện (search + category).
+    var matched = courses.filter(function (course) {
+
+        // Tìm theo title HOẶC tên giảng viên (đề bài yêu cầu).
+        var matchSearch =
+            keyword === "" ||
+            course.title.toLowerCase().includes(keyword) ||
+            course.instructor.toLowerCase().includes(keyword);
+
+        // Lọc theo danh mục (nếu chọn "all" thì hiện tất cả).
+        var matchCategory =
+            category === "all" || course.category === category;
+
+        return matchSearch && matchCategory;
+    });
+
+    // Bước 2: Sắp xếp danh sách khớp theo lựa chọn dropdown.
+    if (sortVal === "price-asc") {
+        matched = matched.slice().sort(function (a, b) { return a.price - b.price; });
+    } else if (sortVal === "price-desc") {
+        matched = matched.slice().sort(function (a, b) { return b.price - a.price; });
+    } else if (sortVal === "rating-desc") {
+        matched = matched.slice().sort(function (a, b) { return b.rating - a.rating; });
+    }
+
+    // Bước 3: Lấy tập hợp id của các khóa học khớp để ẩn/hiện card.
+    var matchedIds = matched.map(function (c) { return c.id; });
+
+    // Bước 4: Duyệt từng card trong DOM, ẩn hoặc hiện tuỳ theo id khớp hay không.
+    var allCards = coursesGrid.querySelectorAll(".col");
+    allCards.forEach(function (col) {
+        var link = col.querySelector("a[href*='id=']");
+        if (!link) {
+            return;
+        }
+        // Lấy id từ href: "course-detail.html?id=2" → 2.
+        var params = new URLSearchParams(link.getAttribute("href").split("?")[1]);
+        var cardId = Number(params.get("id"));
+
+        if (matchedIds.includes(cardId)) {
+            col.style.display = "";
+        } else {
+            col.style.display = "none";
+        }
+    });
+
+    // Bước 5: Nếu đang sort thì cần re-order card trong DOM theo thứ tự matched.
+    if (sortVal !== "default") {
+        matched.forEach(function (course) {
+            var targetCol = Array.from(allCards).find(function (col) {
+                var link = col.querySelector("a[href*='id=" + course.id + "']");
+                return link !== null;
+            });
+            if (targetCol) {
+                coursesGrid.appendChild(targetCol);
+            }
+        });
+    }
+
+    // Bước 6: Hiện/ẩn thông báo "Không tìm thấy khóa học nào".
+    var noResultMsg = document.getElementById("noResultMessage");
+    if (noResultMsg) {
+        if (matched.length === 0) {
+            noResultMsg.classList.remove("d-none");
+        } else {
+            noResultMsg.classList.add("d-none");
+        }
+    }
+}
+
+// Khởi tạo tất cả sự kiện cho Problem 02 (chỉ chạy trên trang index.html).
+function initProblem02() {
+    var searchInput    = document.getElementById("navbarSearchInput");
+    var clearBtn       = document.getElementById("clearSearchBtn");
+    var sortSelect     = document.getElementById("sortSelect");
+    var categoryBtns   = document.querySelectorAll("#categoryTabs .category-button");
+
+    // Không có phần tử → đang ở trang khác, bỏ qua.
+    if (!searchInput) {
+        return;
+    }
+
+    // --- Live Search: gõ vào ô tìm kiếm, debounce 300ms ---
+    searchInput.addEventListener("input", function () {
+        // Hiện/ẩn nút ✕ tuỳ vào có text hay không.
+        if (clearBtn) {
+            if (this.value.length > 0) {
+                clearBtn.classList.remove("d-none");
+            } else {
+                clearBtn.classList.add("d-none");
+            }
+        }
+
+        // Debounce: chờ 300ms sau lần gõ cuối cùng mới lọc.
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(applySearchFilterSort, 300);
+    });
+
+    // --- Nút ✕: xóa nhanh, reset ngay lập tức (không debounce) ---
+    if (clearBtn) {
+        clearBtn.addEventListener("click", function () {
+            searchInput.value = "";
+            clearBtn.classList.add("d-none");
+            searchInput.focus();
+            applySearchFilterSort();
+        });
+    }
+
+    // --- Category Tabs: click tab → đổi active → lọc ngay ---
+    categoryBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            // Bỏ active tất cả, bật active tab vừa click.
+            categoryBtns.forEach(function (b) {
+                b.classList.remove("active");
+            });
+            this.classList.add("active");
+            applySearchFilterSort();
+        });
+    });
+
+    // --- Sort Dropdown: thay đổi → sắp xếp và render lại ngay ---
+    if (sortSelect) {
+        sortSelect.addEventListener("change", applySearchFilterSort);
+    }
+}
+
+
+// Chạy sau khi HTML tải xong: render card rồi khởi tạo chức năng Problem 02.
+document.addEventListener("DOMContentLoaded", function () {
+    renderCourseCards();
+    initProblem02();
+});
 
 
 /*
     Đưa mảng courses và hàm formatPrice vào đối tượng window.
-
-    Nhờ đó, file detail.js có thể sử dụng dữ liệu khóa học
-    được khai báo trong file app.js.
+    Nhờ đó, file detail.js có thể sử dụng dữ liệu được khai báo trong app.js.
 */
 window.courseData = courses;
 window.formatCoursePrice = formatPrice;
