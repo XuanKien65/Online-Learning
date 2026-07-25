@@ -74,9 +74,8 @@ p {
 }
 
 .navbar-search {
-    width: 280px;
+    width: 230px;
 }
-
 
 
 /* ================= PHẦN ĐẦU TRANG ================= */
@@ -211,32 +210,22 @@ p {
     padding: 85px 0;
 }
 
-/* ===== Problem 02: Thanh điều khiển (tabs + sort) ===== */
-
-.course-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 40px;
-}
-
 .category-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
 }
 
 .category-button {
-    padding: 9px 20px;
+    padding: 10px 20px;
     border: 1px solid #dee2e6;
     border-radius: 30px;
     background-color: #ffffff;
     color: #495057;
     font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    transition: 0.2s;
 }
 
 .category-button:hover,
@@ -244,84 +233,6 @@ p {
     border-color: #0d6efd;
     background-color: #0d6efd;
     color: #ffffff;
-}
-
-/* Sort dropdown */
-.sort-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.sort-label {
-    white-space: nowrap;
-    font-size: 14px;
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 0;
-}
-
-.sort-select {
-    padding: 8px 14px;
-    border: 1px solid #dee2e6;
-    border-radius: 30px;
-    background-color: #ffffff;
-    color: #495057;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-    min-width: 185px;
-    transition: border-color 0.2s;
-}
-
-.sort-select:focus {
-    border-color: #0d6efd;
-}
-
-/* Nút xóa nhanh (✕) bên trong ô tìm kiếm navbar */
-.search-clear-btn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 2px 5px;
-    background: none;
-    border: none;
-    color: #6c757d;
-    font-size: 13px;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.search-clear-btn:hover {
-    color: #212529;
-}
-
-/* Thông báo không tìm thấy kết quả */
-.no-result-message {
-    width: 100%;
-    padding: 70px 20px;
-    text-align: center;
-    color: #6c757d;
-}
-
-.no-result-icon {
-    margin-bottom: 16px;
-    font-size: 56px;
-}
-
-.no-result-message h3 {
-    margin-bottom: 8px;
-    font-size: 22px;
-    font-weight: 700;
-    color: #343a40;
-}
-
-.no-result-message p {
-    font-size: 15px;
-    margin: 0;
 }
 
 .course-card {
@@ -671,107 +582,6 @@ p {
 }
 
 
-/* ================= PROBLEM 3: TIẾN ĐỘ HỌC TẬP ================= */
-
-.progress-summary .progress {
-    height: 14px;
-    margin-bottom: 10px;
-    border-radius: 30px;
-}
-
-.progress-summary .progress-bar {
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.progress-text {
-    margin: 0;
-    color: #6c757d;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.lesson-item-main {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.lesson-item-main label {
-    display: flex;
-    align-items: center;
-    margin: 0;
-    cursor: pointer;
-}
-
-.lesson-checkbox {
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-.lesson-completed {
-    background-color: #f0fdf4;
-}
-
-.lesson-completed .lesson-item-main label {
-    color: #6c757d;
-    text-decoration: line-through;
-}
-
-.section-quiz-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 16px 20px;
-    border-top: 1px solid #e9ecef;
-    background-color: #f8f9fa;
-}
-
-.quiz-status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    background-color: #e9ecef;
-    color: #495057;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.quiz-status-pass {
-    background-color: #d1f7e0;
-    color: #198754;
-}
-
-.quiz-status-fail {
-    background-color: #fde2e2;
-    color: #dc3545;
-}
-
-.quiz-question {
-    margin-bottom: 22px;
-}
-
-.quiz-question:last-child {
-    margin-bottom: 0;
-}
-
-.quiz-question-text {
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.quiz-options .form-check {
-    margin-bottom: 8px;
-}
-
-.quiz-result-message {
-    font-weight: 700;
-}
-
-
 /* ================= THANH THÔNG TIN BÊN PHẢI ================= */
 
 .course-sidebar {
@@ -908,24 +718,240 @@ p {
         align-items: flex-start;
         flex-direction: column;
     }
+}
 
-    .section-quiz-footer {
+/* ================= ADMIN PANEL ================= */
+
+.admin-body {
+    background-color: #f6f8fb;
+}
+
+.admin-navbar-tag {
+    margin-left: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.15);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.admin-shell {
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - 72px);
+}
+
+.admin-sidebar {
+    position: sticky;
+    top: 72px;
+    flex-shrink: 0;
+    width: 240px;
+    height: calc(100vh - 72px);
+    padding: 24px 16px;
+    border-right: 1px solid #e9ecef;
+    background-color: #ffffff;
+}
+
+.admin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    color: #495057;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.admin-nav-link i {
+    font-size: 18px;
+}
+
+.admin-nav-link:hover {
+    background-color: #f1f3f5;
+    color: #212529;
+}
+
+.admin-nav-link.active {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+    padding: 32px;
+}
+
+.admin-view-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-view-header h1 {
+    margin-bottom: 6px;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.admin-view-subtitle {
+    margin-bottom: 0;
+    color: #6c757d;
+}
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.admin-search-box {
+    position: relative;
+    flex: 1 1 260px;
+}
+
+.admin-search-box i {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    color: #adb5bd;
+}
+
+.admin-search-box .form-control {
+    padding-left: 38px;
+}
+
+.admin-filter-select {
+    flex: 0 1 190px;
+}
+
+.admin-table-card {
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 28px rgba(33, 37, 41, 0.06);
+}
+
+.admin-table {
+    margin-bottom: 0;
+}
+
+.admin-table thead {
+    background-color: #f8f9fa;
+}
+
+.admin-table th {
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.admin-course-title {
+    max-width: 320px;
+    font-weight: 600;
+}
+
+.admin-empty-row {
+    padding: 40px 20px;
+    color: #6c757d;
+    text-align: center;
+}
+
+.admin-table .btn-edit-course {
+    margin-right: 6px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-badge-published {
+    background-color: #d1f5e0;
+    color: #198754;
+}
+
+.status-badge-draft {
+    background-color: #fff3cd;
+    color: #997404;
+}
+
+.admin-table-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.admin-results-summary {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* ================= RESPONSIVE - ADMIN PANEL ================= */
+
+@media (max-width: 991px) {
+    .admin-shell {
         flex-direction: column;
-        align-items: flex-start;
     }
 
-    /* Problem 02: mobile — controls xếp dọc */
-    .course-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .sort-wrapper {
+    .admin-sidebar {
+        position: static;
         width: 100%;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid #e9ecef;
     }
 
-    .sort-select {
-        flex: 1;
-        min-width: unset;
+    .admin-sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .admin-main {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 575px) {
+    .admin-toolbar {
+        flex-direction: column;
+    }
+
+    .admin-filter-select {
+        flex: 1 1 auto;
+    }
+
+    .admin-table-footer {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
