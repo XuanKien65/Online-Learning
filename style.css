@@ -671,6 +671,107 @@ p {
 }
 
 
+/* ================= PROBLEM 3: TIẾN ĐỘ HỌC TẬP ================= */
+
+.progress-summary .progress {
+    height: 14px;
+    margin-bottom: 10px;
+    border-radius: 30px;
+}
+
+.progress-summary .progress-bar {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.progress-text {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.lesson-item-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lesson-item-main label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+}
+
+.lesson-checkbox {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.lesson-completed {
+    background-color: #f0fdf4;
+}
+
+.lesson-completed .lesson-item-main label {
+    color: #6c757d;
+    text-decoration: line-through;
+}
+
+.section-quiz-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
+.quiz-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #e9ecef;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.quiz-status-pass {
+    background-color: #d1f7e0;
+    color: #198754;
+}
+
+.quiz-status-fail {
+    background-color: #fde2e2;
+    color: #dc3545;
+}
+
+.quiz-question {
+    margin-bottom: 22px;
+}
+
+.quiz-question:last-child {
+    margin-bottom: 0;
+}
+
+.quiz-question-text {
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.quiz-options .form-check {
+    margin-bottom: 8px;
+}
+
+.quiz-result-message {
+    font-weight: 700;
+}
+
+
 /* ================= THANH THÔNG TIN BÊN PHẢI ================= */
 
 .course-sidebar {
@@ -806,6 +907,11 @@ p {
     .lesson-item {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .section-quiz-footer {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     /* Problem 02: mobile — controls xếp dọc */
