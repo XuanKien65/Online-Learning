@@ -191,6 +191,40 @@
 
                 </section>
 
+                <!-- Tiến độ học tập (Problem 3) -->
+                <section class="detail-content-card">
+
+                    <h2>
+                        Tiến độ học tập
+                    </h2>
+
+                    <div class="progress-summary">
+
+                        <div
+                            class="progress"
+                            role="progressbar"
+                            aria-label="Tiến độ khóa học"
+                            aria-valuenow="0"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                        >
+                            <div
+                                id="courseProgressBar"
+                                class="progress-bar bg-success"
+                                style="width: 0%"
+                            >
+                                0%
+                            </div>
+                        </div>
+
+                        <p id="progressText" class="progress-text">
+                            0/0 bài học hoàn thành
+                        </p>
+
+                    </div>
+
+                </section>
+
                 <!-- Kiến thức nhận được -->
                 <section class="detail-content-card">
 
@@ -406,6 +440,61 @@
 
     </div>
 </footer>
+
+<!-- Modal bài kiểm tra (Problem 3) -->
+<div
+    class="modal fade"
+    id="quizModal"
+    tabindex="-1"
+    aria-labelledby="quizModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="quizModalLabel">
+                    Bài kiểm tra
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Đóng"
+                ></button>
+
+            </div>
+
+            <!-- JavaScript sẽ tạo các câu hỏi ở đây -->
+            <div class="modal-body" id="quizModalBody"></div>
+
+            <div class="modal-footer">
+
+                <div id="quizResultMessage" class="quiz-result-message me-auto"></div>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Đóng
+                </button>
+
+                <button
+                    type="button"
+                    id="quizSubmitBtn"
+                    class="btn btn-primary"
+                >
+                    Nộp bài
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- Bootstrap JavaScript -->
 <script

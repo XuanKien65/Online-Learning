@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
 
     <!-- Giúp giao diện hiển thị tốt trên điện thoại và máy tính bảng -->
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>LearnHub - Học trực tuyến</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- File CSS tự viết -->
     <link rel="stylesheet" href="style.css">
@@ -23,409 +18,447 @@
 
 <body>
 
-<!-- ================= THANH ĐIỀU HƯỚNG ================= -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <div class="container">
-
-        <!-- Logo trang web -->
-        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-            <span class="logo-mark">L</span>
-            <span>LearnHub</span>
-        </a>
-
-        <!-- Nút menu xuất hiện trên màn hình nhỏ -->
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar"
-            aria-controls="mainNavbar"
-            aria-expanded="false"
-            aria-label="Mở hoặc đóng menu"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Nội dung thanh điều hướng -->
-        <div class="collapse navbar-collapse" id="mainNavbar">
-
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                <li class="nav-item">
-                    <a class="nav-link active" href="#courses">
-                        Khóa học
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#about">
-                        Giới thiệu
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">
-                        Liên hệ
-                    </a>
-                </li>
-
-            </ul>
-
-            <!-- Ô tìm kiếm hiện mới chỉ có giao diện.
-                 Chức năng tìm kiếm sẽ làm trong Bài 2. -->
-            <div class="navbar-search me-lg-3 mb-3 mb-lg-0">
-                <input
-                    id="navbarSearchInput"
-                    class="form-control"
-                    type="search"
-                    placeholder="Tìm kiếm khóa học..."
-                    aria-label="Tìm kiếm khóa học"
-                >
-            </div>
-
-            <button class="btn btn-outline-light" type="button">
-                Đăng nhập
-            </button>
-
-        </div>
-    </div>
-</nav>
-
-<!-- ================= PHẦN GIỚI THIỆU ĐẦU TRANG ================= -->
-<header class="hero-section" id="about">
-    <div class="container">
-        <div class="row align-items-center">
-
-            <div class="col-lg-7">
-
-                <span class="hero-label">
-                    Nền tảng học trực tuyến
-                </span>
-
-                <h1 class="hero-title">
-                    Phát triển kỹ năng cùng LearnHub
-                </h1>
-
-                <p class="hero-description">
-                    Khám phá hơn 100 khóa học do chuyên gia hướng dẫn
-                    và học tập theo tốc độ phù hợp với bạn.
-                </p>
-
-                <div class="d-flex flex-wrap gap-3">
-
-                    <a class="btn btn-light btn-lg" href="#courses">
-                        Xem khóa học ▶
-                    </a>
-
-                    <a class="btn btn-outline-light btn-lg" href="#aboutContent">
-                        Tìm hiểu thêm
-                    </a>
-
-                </div>
-            </div>
-
-            <!-- Phần này chỉ hiển thị trên màn hình máy tính -->
-            <div class="col-lg-5 d-none d-lg-block">
-
-                <div class="hero-card">
-
-                    <div class="hero-card-icon">🎓</div>
-
-                    <h2>Học tập mọi lúc</h2>
-
-                    <p>
-                        Học trên mọi thiết bị và hoàn thành bài học
-                        theo tốc độ phù hợp với bạn.
-                    </p>
-
-                    <div class="hero-statistics">
-
-                        <div>
-                            <strong>100+</strong>
-                            <span>Khóa học</span>
-                        </div>
-
-                        <div>
-                            <strong>50+</strong>
-                            <span>Giảng viên</span>
-                        </div>
-
-                        <div>
-                            <strong>10K+</strong>
-                            <span>Học viên</span>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</header>
-
-<!-- ================= PHẦN GIỚI THIỆU ================= -->
-<section class="about-section" id="aboutContent">
-    <div class="container">
-
-        <div class="section-heading text-center">
-
-            <span class="section-label">
-                Vì sao nên chọn LearnHub?
-            </span>
-
-            <h2>
-                Học kỹ năng thực tế từ các chuyên gia
-            </h2>
-
-            <p>
-                LearnHub cung cấp các khóa học trực tuyến linh hoạt
-                dành cho sinh viên, người đi làm và bất kỳ ai muốn
-                nâng cao kiến thức của mình.
-            </p>
-
-        </div>
-
-        <div class="row g-4">
-
-            <div class="col-md-4">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">📖</div>
-
-                    <h3>Khóa học chất lượng</h3>
-
-                    <p>
-                        Các khóa học được xây dựng rõ ràng, có ví dụ
-                        và bài tập thực hành dễ hiểu.
-                    </p>
-
-                </div>
-            </div>
-
-            <div class="col-md-4">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">⏰</div>
-
-                    <h3>Học tập linh hoạt</h3>
-
-                    <p>
-                        Bạn có thể học bất cứ lúc nào và tiếp tục
-                        từ vị trí đã dừng lại.
-                    </p>
-
-                </div>
-            </div>
-
-            <div class="col-md-4">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">🏆</div>
-
-                    <h3>Chứng chỉ hoàn thành</h3>
-
-                    <p>
-                        Nhận chứng chỉ sau khi hoàn thành đầy đủ
-                        bài học và bài kiểm tra.
-                    </p>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ================= DANH SÁCH KHÓA HỌC ================= -->
-<main class="course-section" id="courses">
-    <div class="container">
-
-        <div class="section-heading text-center">
-
-            <span class="section-label">
-                Các khóa học
-            </span>
-
-            <h2>
-                Khám phá các khóa học nổi bật
-            </h2>
-
-            <p>
-                Lựa chọn khóa học phù hợp và bắt đầu học ngay hôm nay.
-            </p>
-
-        </div>
-
-        <!-- Các nút danh mục hiện mới chỉ có giao diện.
-             Chức năng lọc sẽ được làm trong Bài 2. -->
-        <div class="category-tabs">
-
-            <button class="category-button active" type="button">
-                Tất cả
-            </button>
-
-            <button class="category-button" type="button">
-                Lập trình web
-            </button>
-
-            <button class="category-button" type="button">
-                Thiết kế
-            </button>
-
-            <button class="category-button" type="button">
-                Khoa học dữ liệu
-            </button>
-
-            <button class="category-button" type="button">
-                Marketing
-            </button>
-
-        </div>
-
-        <!-- JavaScript sẽ đưa các thẻ khóa học vào đây -->
-        <div
-            id="coursesGrid"
-            class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
-        ></div>
-
-    </div>
-</main>
-
-<!-- ================= PHẦN LIÊN HỆ ================= -->
-<section class="contact-section" id="contact">
-    <div class="container">
-
-        <div class="contact-box">
-
-            <div>
-
-                <span class="section-label">
-                    Bạn cần hỗ trợ?
-                </span>
-
-                <h2>
-                    Liên hệ với đội ngũ hỗ trợ LearnHub
-                </h2>
-
-                <p class="mb-0">
-                    Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng
-                    giải đáp các câu hỏi của bạn.
-                </p>
-
-            </div>
-
-            <a
-                class="btn btn-primary btn-lg"
-                href="mailto:support@learnhub.com"
-            >
-                Liên hệ ngay
+    <!-- ================= THANH ĐIỀU HƯỚNG ================= -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+
+            <!-- Logo trang web -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <span class="logo-mark">L</span>
+                <span>LearnHub</span>
             </a>
 
-        </div>
-    </div>
-</section>
+            <!-- Nút menu xuất hiện trên màn hình nhỏ -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Mở hoặc đóng menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-<!-- ================= CHÂN TRANG ================= -->
-<footer class="site-footer">
-    <div class="container">
+            <!-- Nội dung thanh điều hướng -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
 
-        <div class="row g-4">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-            <!-- Cột 1 -->
-            <div class="col-md-4">
-
-                <h3 class="footer-title">
-                    Về LearnHub
-                </h3>
-
-                <p>
-                    LearnHub là nền tảng học trực tuyến giúp người học
-                    nâng cao kiến thức và phát triển các kỹ năng thực tế.
-                </p>
-
-            </div>
-
-            <!-- Cột 2 -->
-            <div class="col-md-4">
-
-                <h3 class="footer-title">
-                    Liên kết nhanh
-                </h3>
-
-                <ul class="footer-links">
-
-                    <li>
-                        <a href="index.html">
-                            Trang chủ
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#courses">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#courses">
                             Khóa học
                         </a>
                     </li>
 
-                    <li>
-                        <a href="#about">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">
                             Giới thiệu
                         </a>
                     </li>
 
-                    <li>
-                        <a href="#contact">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">
                             Liên hệ
                         </a>
                     </li>
 
                 </ul>
+
+                <!-- Ô tìm kiếm – Problem 02: Live Search theo title hoặc tên giảng viên -->
+                <div class="navbar-search me-lg-3 mb-3 mb-lg-0 position-relative">
+                    <input
+                        id="navbarSearchInput"
+                        class="form-control"
+                        type="search"
+                        placeholder="Tìm khóa học hoặc giảng viên..."
+                        aria-label="Tìm kiếm khóa học"
+                        autocomplete="off"
+                    >
+                    <!-- Nút xóa nhanh (✕) – hiện khi có text, ẩn khi trống -->
+                    <button
+                        id="clearSearchBtn"
+                        class="search-clear-btn d-none"
+                        type="button"
+                        aria-label="Xóa tìm kiếm"
+                    >✕</button>
+                </div>
+
+                <button class="btn btn-outline-light" type="button">
+                    Đăng nhập
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= PHẦN GIỚI THIỆU ĐẦU TRANG ================= -->
+    <header class="hero-section" id="about">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <div class="col-lg-7">
+
+                    <span class="hero-label">
+                        Nền tảng học trực tuyến
+                    </span>
+
+                    <h1 class="hero-title">
+                        Phát triển kỹ năng cùng LearnHub
+                    </h1>
+
+                    <p class="hero-description">
+                        Khám phá hơn 100 khóa học do chuyên gia hướng dẫn
+                        và học tập theo tốc độ phù hợp với bạn.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-3">
+
+                        <a class="btn btn-light btn-lg" href="#courses">
+                            Xem khóa học ▶
+                        </a>
+
+                        <a class="btn btn-outline-light btn-lg" href="#aboutContent">
+                            Tìm hiểu thêm
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- Phần này chỉ hiển thị trên màn hình máy tính -->
+                <div class="col-lg-5 d-none d-lg-block">
+
+                    <div class="hero-card">
+
+                        <div class="hero-card-icon">🎓</div>
+
+                        <h2>Học tập mọi lúc</h2>
+
+                        <p>
+                            Học trên mọi thiết bị và hoàn thành bài học
+                            theo tốc độ phù hợp với bạn.
+                        </p>
+
+                        <div class="hero-statistics">
+
+                            <div>
+                                <strong>100+</strong>
+                                <span>Khóa học</span>
+                            </div>
+
+                            <div>
+                                <strong>50+</strong>
+                                <span>Giảng viên</span>
+                            </div>
+
+                            <div>
+                                <strong>10K+</strong>
+                                <span>Học viên</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= PHẦN GIỚI THIỆU ================= -->
+    <section class="about-section" id="aboutContent">
+        <div class="container">
+
+            <div class="section-heading text-center">
+
+                <span class="section-label">
+                    Vì sao nên chọn LearnHub?
+                </span>
+
+                <h2>
+                    Học kỹ năng thực tế từ các chuyên gia
+                </h2>
+
+                <p>
+                    LearnHub cung cấp các khóa học trực tuyến linh hoạt
+                    dành cho sinh viên, người đi làm và bất kỳ ai muốn
+                    nâng cao kiến thức của mình.
+                </p>
+
             </div>
 
-            <!-- Cột 3 -->
-            <div class="col-md-4">
+            <div class="row g-4">
 
-                <h3 class="footer-title">
-                    Thông tin liên hệ
-                </h3>
+                <div class="col-md-4">
 
-                <ul class="footer-contact">
+                    <div class="feature-card">
 
-                    <li>
-                        Email: support@learnhub.com
-                    </li>
+                        <div class="feature-icon">📖</div>
 
-                    <li>
-                        Điện thoại: +84 123 456 789
-                    </li>
+                        <h3>Khóa học chất lượng</h3>
 
-                    <li>
-                        Địa chỉ: Hà Nội, Việt Nam
-                    </li>
+                        <p>
+                            Các khóa học được xây dựng rõ ràng, có ví dụ
+                            và bài tập thực hành dễ hiểu.
+                        </p>
 
-                </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-card">
+
+                        <div class="feature-icon">⏰</div>
+
+                        <h3>Học tập linh hoạt</h3>
+
+                        <p>
+                            Bạn có thể học bất cứ lúc nào và tiếp tục
+                            từ vị trí đã dừng lại.
+                        </p>
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-card">
+
+                        <div class="feature-icon">🏆</div>
+
+                        <h3>Chứng chỉ hoàn thành</h3>
+
+                        <p>
+                            Nhận chứng chỉ sau khi hoàn thành đầy đủ
+                            bài học và bài kiểm tra.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= DANH SÁCH KHÓA HỌC ================= -->
+    <main class="course-section" id="courses">
+        <div class="container">
+
+            <div class="section-heading text-center">
+
+                <span class="section-label">
+                    Các khóa học
+                </span>
+
+                <h2>
+                    Khám phá các khóa học nổi bật
+                </h2>
+
+                <p>
+                    Lựa chọn khóa học phù hợp và bắt đầu học ngay hôm nay.
+                </p>
+
+            </div>
+
+            <!-- Problem 02: Thanh điều khiển — Category Tabs + Sort Dropdown -->
+            <div class="course-controls">
+
+                <!-- Tab danh mục: data-category khớp với trường category trong courses array -->
+                <div class="category-tabs" id="categoryTabs">
+
+                    <button
+                        class="category-button active"
+                        type="button"
+                        data-category="all"
+                    >
+                        Tất cả
+                    </button>
+
+                    <button
+                        class="category-button"
+                        type="button"
+                        data-category="Lập trình web"
+                    >
+                        Lập trình web
+                    </button>
+
+                    <button
+                        class="category-button"
+                        type="button"
+                        data-category="Thiết kế"
+                    >
+                        Thiết kế
+                    </button>
+
+                    <button
+                        class="category-button"
+                        type="button"
+                        data-category="Khoa học dữ liệu"
+                    >
+                        Khoa học dữ liệu
+                    </button>
+
+                    <button
+                        class="category-button"
+                        type="button"
+                        data-category="Marketing"
+                    >
+                        Marketing
+                    </button>
+
+                </div>
+
+                <!-- Sort Dropdown: sắp xếp theo giá hoặc rating -->
+                <div class="sort-wrapper">
+                    <label for="sortSelect" class="sort-label">Sắp xếp:</label>
+                    <select id="sortSelect" class="sort-select">
+                        <option value="default">Mặc định</option>
+                        <option value="price-asc">Giá: Thấp → Cao</option>
+                        <option value="price-desc">Giá: Cao → Thấp</option>
+                        <option value="rating-desc">Đánh giá: Cao nhất</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Grid hiển thị khóa học – JS render các card vào đây -->
+            <div
+                id="coursesGrid"
+                class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+            ></div>
+
+            <!-- Thông báo khi không tìm thấy kết quả (Problem 02) -->
+            <div id="noResultMessage" class="no-result-message d-none">
+                <div class="no-result-icon">🔍</div>
+                <h3>Không tìm thấy khóa học nào</h3>
+                <p>Thử từ khóa khác hoặc chọn danh mục khác.</p>
             </div>
 
         </div>
+    </main>
 
-        <hr class="footer-divider">
+    <!-- ================= PHẦN LIÊN HỆ ================= -->
+    <section class="contact-section" id="contact">
+        <div class="container">
 
-        <p class="footer-copyright">
-            © 2026 LearnHub. Đã đăng ký bản quyền.
-        </p>
+            <div class="contact-box">
 
-    </div>
-</footer>
+                <div>
 
-<!-- Bootstrap JavaScript -->
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
+                    <span class="section-label">
+                        Bạn cần hỗ trợ?
+                    </span>
 
-<!-- Dữ liệu và code hiển thị khóa học -->
-<script src="app.js"></script>
+                    <h2>
+                        Liên hệ với đội ngũ hỗ trợ LearnHub
+                    </h2>
+
+                    <p class="mb-0">
+                        Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng
+                        giải đáp các câu hỏi của bạn.
+                    </p>
+
+                </div>
+
+                <a class="btn btn-primary btn-lg" href="mailto:support@learnhub.com">
+                    Liên hệ ngay
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CHÂN TRANG ================= -->
+    <footer class="site-footer">
+        <div class="container">
+
+            <div class="row g-4">
+
+                <!-- Cột 1 -->
+                <div class="col-md-4">
+
+                    <h3 class="footer-title">
+                        Về LearnHub
+                    </h3>
+
+                    <p>
+                        LearnHub là nền tảng học trực tuyến giúp người học
+                        nâng cao kiến thức và phát triển các kỹ năng thực tế.
+                    </p>
+
+                </div>
+
+                <!-- Cột 2 -->
+                <div class="col-md-4">
+
+                    <h3 class="footer-title">
+                        Liên kết nhanh
+                    </h3>
+
+                    <ul class="footer-links">
+
+                        <li>
+                            <a href="index.html">
+                                Trang chủ
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#courses">
+                                Khóa học
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#about">
+                                Giới thiệu
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#contact">
+                                Liên hệ
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <!-- Cột 3 -->
+                <div class="col-md-4">
+
+                    <h3 class="footer-title">
+                        Thông tin liên hệ
+                    </h3>
+
+                    <ul class="footer-contact">
+
+                        <li>
+                            Email: support@learnhub.com
+                        </li>
+
+                        <li>
+                            Điện thoại: +84 123 456 789
+                        </li>
+
+                        <li>
+                            Địa chỉ: Hà Nội, Việt Nam
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+
+            <hr class="footer-divider">
+
+            <p class="footer-copyright">
+                © 2026 LearnHub. Đã đăng ký bản quyền.
+            </p>
+
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dữ liệu và code hiển thị khóa học -->
+    <script src="app.js"></script>
 
 </body>
+
 </html>
