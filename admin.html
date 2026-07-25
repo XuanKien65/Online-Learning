@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Panel - LearnHub</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <!-- File CSS tự viết -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-body">
+
+<!-- ================= THANH ĐIỀU HƯỚNG ADMIN ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark admin-navbar sticky-top">
+    <div class="container-fluid">
+
+        <a class="navbar-brand d-flex align-items-center gap-2" href="admin.html">
+            <span class="logo-mark">L</span>
+            <span>LearnHub <span class="admin-navbar-tag">Admin Panel</span></span>
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminNavbar"
+            aria-controls="adminNavbar"
+            aria-expanded="false"
+            aria-label="Mở hoặc đóng menu"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="adminNavbar">
+
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
+                <li class="nav-item">
+                    <span class="nav-link admin-user">
+                        <i class="bi bi-person-circle"></i>
+                        Admin
+                    </span>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-outline-light btn-sm" href="index.html">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Đăng xuất
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="admin-shell">
+
+    <!-- ================= THANH BÊN (SIDEBAR) ================= -->
+    <aside class="admin-sidebar">
+
+        <nav class="admin-sidebar-nav" aria-label="Menu quản trị">
+
+            <a class="admin-nav-link active" href="#" data-view="dashboard">
+                <i class="bi bi-house-door"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a class="admin-nav-link" href="#" data-view="courses">
+                <i class="bi bi-journal-bookmark"></i>
+                <span>Khóa học</span>
+            </a>
+
+            <a class="admin-nav-link" href="#" data-view="instructors">
+                <i class="bi bi-person-badge"></i>
+                <span>Giảng viên</span>
+            </a>
+
+            <a class="admin-nav-link" href="#" data-view="reports">
+                <i class="bi bi-bar-chart"></i>
+                <span>Báo cáo</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- ================= KHU VỰC NỘI DUNG CHÍNH ================= -->
+    <main class="admin-main">
+
+        <!-- Khu vực quản lý khóa học (view mặc định đang hoạt động) -->
+        <section id="coursesView" class="admin-view">
+
+            <div class="admin-view-header">
+
+                <div>
+                    <h1>Quản lý khóa học</h1>
+                    <p class="admin-view-subtitle">
+                        Thêm, tìm kiếm, lọc và quản lý toàn bộ khóa học của LearnHub.
+                    </p>
+                </div>
+
+                <button
+                    id="btnAddCourse"
+                    class="btn btn-primary"
+                    type="button"
+                >
+                    <i class="bi bi-plus-lg"></i>
+                    Thêm khóa học mới
+                </button>
+
+            </div>
+
+            <!-- Thanh tìm kiếm và bộ lọc -->
+            <div class="admin-toolbar">
+
+                <div class="admin-search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        id="courseSearchInput"
+                        class="form-control"
+                        type="search"
+                        placeholder="Tìm kiếm khóa học..."
+                        aria-label="Tìm kiếm khóa học"
+                    >
+
+                </div>
+
+                <select
+                    id="categoryFilterSelect"
+                    class="form-select admin-filter-select"
+                    aria-label="Lọc theo danh mục"
+                >
+                    <option value="all">Tất cả danh mục</option>
+                    <option value="Lập trình web">Lập trình web</option>
+                    <option value="Thiết kế">Thiết kế</option>
+                    <option value="Khoa học dữ liệu">Khoa học dữ liệu</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Khác">Khác</option>
+                </select>
+
+                <select
+                    id="statusFilterSelect"
+                    class="form-select admin-filter-select"
+                    aria-label="Lọc theo trạng thái"
+                >
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="published">Đã xuất bản</option>
+                    <option value="draft">Bản nháp</option>
+                </select>
+
+            </div>
+
+            <!-- Bảng danh sách khóa học -->
+            <div class="admin-table-card">
+
+                <div class="table-responsive">
+
+                    <table class="table admin-table align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Tiêu đề</th>
+                                <th scope="col">Danh mục</th>
+                                <th scope="col">Giảng viên</th>
+                                <th scope="col">Giá</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col" class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+
+                        <!-- admin.js sẽ đưa các dòng khóa học vào đây -->
+                        <tbody id="coursesTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Chân bảng: thông tin số lượng kết quả + phân trang -->
+                <div class="admin-table-footer">
+
+                    <p id="resultsSummary" class="admin-results-summary mb-0">
+                        Đang tải dữ liệu...
+                    </p>
+
+                    <nav aria-label="Phân trang danh sách khóa học">
+                        <ul id="paginationList" class="pagination mb-0"></ul>
+                    </nav>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- ================= MODAL THÊM / SỬA KHÓA HỌC ================= -->
+<!--
+    Modal dùng chung cho chức năng CREATE và UPDATE (Problem 04, mục 9-10).
+    Ở phần này (Read/Search/Filter/Pagination) modal chỉ mới có giao diện,
+    logic lưu dữ liệu sẽ được bổ sung ở phần CRUD tiếp theo.
+-->
+<div
+    class="modal fade"
+    id="courseFormModal"
+    tabindex="-1"
+    aria-labelledby="courseFormModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="courseFormModalLabel">
+                    Thêm khóa học mới
+                </h2>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Đóng"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="courseForm" class="row g-3" novalidate>
+
+                    <input type="hidden" id="courseFormId">
+
+                    <div class="col-md-8">
+                        <label class="form-label" for="courseFormTitle">
+                            Tiêu đề khóa học
+                        </label>
+                        <input
+                            id="courseFormTitle"
+                            class="form-control"
+                            type="text"
+                            minlength="5"
+                            required
+                        >
+                        <div class="invalid-feedback">
+                            Tiêu đề phải có ít nhất 5 ký tự.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="courseFormCategory">
+                            Danh mục
+                        </label>
+                        <select id="courseFormCategory" class="form-select" required>
+                            <option value="Lập trình web">Lập trình web</option>
+                            <option value="Thiết kế">Thiết kế</option>
+                            <option value="Khoa học dữ liệu">Khoa học dữ liệu</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="courseFormInstructor">
+                            Tên giảng viên
+                        </label>
+                        <input
+                            id="courseFormInstructor"
+                            class="form-control"
+                            type="text"
+                            required
+                        >
+                        <div class="invalid-feedback">
+                            Vui lòng nhập tên giảng viên.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="courseFormLessons">
+                            Số bài học
+                        </label>
+                        <input
+                            id="courseFormLessons"
+                            class="form-control"
+                            type="number"
+                            min="1"
+                            max="100"
+                            required
+                        >
+                        <div class="invalid-feedback">
+                            Số bài học phải trong khoảng 1 - 100.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="courseFormPrice">
+                            Giá (USD, nhập 0 nếu miễn phí)
+                        </label>
+                        <input
+                            id="courseFormPrice"
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            required
+                        >
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="courseFormRating">
+                            Đánh giá (1.0 - 5.0)
+                        </label>
+                        <input
+                            id="courseFormRating"
+                            class="form-control"
+                            type="number"
+                            min="1"
+                            max="5"
+                            step="0.1"
+                            required
+                        >
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="courseFormStatus">
+                            Trạng thái
+                        </label>
+                        <select id="courseFormStatus" class="form-select" required>
+                            <option value="published">Đã xuất bản</option>
+                            <option value="draft">Bản nháp</option>
+                        </select>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Hủy
+                </button>
+                <button
+                    id="saveCourseBtn"
+                    type="button"
+                    class="btn btn-primary"
+                >
+                    Lưu khóa học
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL XÁC NHẬN XÓA ================= -->
+<!--
+    Modal xác nhận cho chức năng DELETE (Problem 04, mục 11).
+    Logic xóa thật sự sẽ được bổ sung ở phần CRUD tiếp theo.
+-->
+<div
+    class="modal fade"
+    id="deleteConfirmModal"
+    tabindex="-1"
+    aria-labelledby="deleteConfirmModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="deleteConfirmModalLabel">
+                    Xác nhận xóa khóa học
+                </h2>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Đóng"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-0">
+                    Bạn có chắc chắn muốn xóa khóa học
+                    "<strong id="deleteConfirmCourseTitle">-</strong>"?
+                    Hành động này không thể hoàn tác.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Hủy
+                </button>
+                <button
+                    id="confirmDeleteBtn"
+                    type="button"
+                    class="btn btn-danger"
+                >
+                    Xóa khóa học
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= KHU VỰC HIỂN THỊ TOAST ================= -->
+<div
+    id="toastContainer"
+    class="toast-container position-fixed bottom-0 end-0 p-3"
+></div>
+
+<!-- Bootstrap JavaScript -->
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+<!-- app.js chứa danh sách khóa học gốc (dùng để seed localStorage lần đầu) -->
+<script src="app.js"></script>
+
+<!-- admin.js chứa toàn bộ logic của trang quản trị -->
+<script src="admin.js"></script>
+
+</body>
+</html>
