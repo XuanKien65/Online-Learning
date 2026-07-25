@@ -719,3 +719,239 @@ p {
         flex-direction: column;
     }
 }
+
+/* ================= ADMIN PANEL ================= */
+
+.admin-body {
+    background-color: #f6f8fb;
+}
+
+.admin-navbar-tag {
+    margin-left: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.15);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.admin-shell {
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - 72px);
+}
+
+.admin-sidebar {
+    position: sticky;
+    top: 72px;
+    flex-shrink: 0;
+    width: 240px;
+    height: calc(100vh - 72px);
+    padding: 24px 16px;
+    border-right: 1px solid #e9ecef;
+    background-color: #ffffff;
+}
+
+.admin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    color: #495057;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.admin-nav-link i {
+    font-size: 18px;
+}
+
+.admin-nav-link:hover {
+    background-color: #f1f3f5;
+    color: #212529;
+}
+
+.admin-nav-link.active {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+    padding: 32px;
+}
+
+.admin-view-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-view-header h1 {
+    margin-bottom: 6px;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.admin-view-subtitle {
+    margin-bottom: 0;
+    color: #6c757d;
+}
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.admin-search-box {
+    position: relative;
+    flex: 1 1 260px;
+}
+
+.admin-search-box i {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    color: #adb5bd;
+}
+
+.admin-search-box .form-control {
+    padding-left: 38px;
+}
+
+.admin-filter-select {
+    flex: 0 1 190px;
+}
+
+.admin-table-card {
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 28px rgba(33, 37, 41, 0.06);
+}
+
+.admin-table {
+    margin-bottom: 0;
+}
+
+.admin-table thead {
+    background-color: #f8f9fa;
+}
+
+.admin-table th {
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.admin-course-title {
+    max-width: 320px;
+    font-weight: 600;
+}
+
+.admin-empty-row {
+    padding: 40px 20px;
+    color: #6c757d;
+    text-align: center;
+}
+
+.admin-table .btn-edit-course {
+    margin-right: 6px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-badge-published {
+    background-color: #d1f5e0;
+    color: #198754;
+}
+
+.status-badge-draft {
+    background-color: #fff3cd;
+    color: #997404;
+}
+
+.admin-table-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.admin-results-summary {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* ================= RESPONSIVE - ADMIN PANEL ================= */
+
+@media (max-width: 991px) {
+    .admin-shell {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .admin-sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .admin-main {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 575px) {
+    .admin-toolbar {
+        flex-direction: column;
+    }
+
+    .admin-filter-select {
+        flex: 1 1 auto;
+    }
+
+    .admin-table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
