@@ -332,17 +332,17 @@ function createCourseCard(course) {
                     </h3>
 
                     <p class="course-rating">
-                        ⭐ ${course.rating} (${course.reviews} đánh giá)
+                        <i class="bi bi-star-fill"></i> ${course.rating} (${course.reviews} đánh giá)
                     </p>
 
                     <div class="course-information">
 
                         <span>
-                            👤 ${course.instructor}
+                            <i class="bi bi-person-fill"></i> ${course.instructor}
                         </span>
 
                         <span>
-                            📚 ${course.lessons} bài học
+                            <i class="bi bi-journal-bookmark-fill"></i> ${course.lessons} bài học
                         </span>
 
                     </div>
@@ -515,7 +515,7 @@ function initProblem02() {
 
     // --- Live Search: gõ vào ô tìm kiếm, debounce 300ms ---
     searchInput.addEventListener("input", function () {
-        // Hiện/ẩn nút ✕ tuỳ vào có text hay không.
+        // Hiện/ẩn nút xóa nhanh tuỳ vào có text hay không.
         if (clearBtn) {
             if (this.value.length > 0) {
                 clearBtn.classList.remove("d-none");
@@ -529,7 +529,7 @@ function initProblem02() {
         searchDebounceTimer = setTimeout(applySearchFilterSort, 300);
     });
 
-    // --- Nút ✕: xóa nhanh, reset ngay lập tức (không debounce) ---
+    // --- Nút xóa nhanh: reset ngay lập tức (không debounce) ---
     if (clearBtn) {
         clearBtn.addEventListener("click", function () {
             searchInput.value = "";

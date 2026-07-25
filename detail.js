@@ -9,11 +9,8 @@
     - Hiển thị mục tiêu học tập.
     - Hiển thị mô tả.
     - Tạo Bootstrap Accordion cho chương trình học.
-
-    Problem 3 (bổ sung):
-    - Checkbox đánh dấu hoàn thành từng bài học, lưu vào localStorage.
-    - Thanh Progress Bar hiển thị % bài học đã hoàn thành.
-    - Hệ thống Quiz 3 câu/chương với điều kiện Pass/Fail.
+    - Problem 03: theo dõi tiến độ học (checkbox + progress bar) và làm bài kiểm tra cuối mỗi phần,
+      toàn bộ tiến độ được lưu vào localStorage để giữ lại sau khi tải lại trang.
 */
 
 
@@ -78,7 +75,7 @@ function renderLearningGoals(course) {
                     <div class="learning-goal-item">
 
                         <span class="learning-goal-icon">
-                            ✓
+                            <i class="bi bi-check-lg"></i>
                         </span>
 
                         <span>
@@ -111,388 +108,272 @@ function renderCourseDescription(course) {
 }
 
 
-// ============================================================
-// PROBLEM 03 — localStorage: lưu tiến độ bài học + kết quả quiz
-// ============================================================
+/*
+    Problem 03 - Lesson Player & Quiz Feature
 
-// Khóa dùng để lưu toàn bộ tiến độ học tập vào localStorage.
-const PROGRESS_STORAGE_KEY = "learnhubProgress";
+    Toàn bộ hàm bên dưới phục vụ cho:
+    - Đánh dấu bài học đã hoàn thành bằng checkbox, lưu vào localStorage.
+    - Thanh tiến độ "X / Y bài học đã hoàn thành".
+    - Huy hiệu hoàn thành khi một phần học xong toàn bộ bài học.
+    - Bài kiểm tra cuối mỗi phần (tối thiểu 3 câu hỏi trắc nghiệm), chấm điểm và lưu kết quả Đạt/Không đạt.
+*/
 
-// Số câu trả lời đúng tối thiểu để Pass (trên tổng 3 câu/chương).
-const QUIZ_PASS_SCORE = 2;
+// Ngân hàng câu hỏi cho từng phần học, mỗi khóa học đều dùng chung 3 phần nên dùng chung ngân hàng câu hỏi theo chỉ số phần.
+const quizBank = [
+    {
+        questions: [
+            {
+                question: "HTML là viết tắt của cụm từ nào?",
+                options: [
+                    "HyperText Markup Language",
+                    "HighText Machine Language",
+                    "Hyperlink Text Markup Language",
+                    "Không có đáp án nào đúng"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Thẻ HTML nào dùng để tạo một đoạn văn bản?",
+                options: ["<para>", "<p>", "<pg>", "<text>"],
+                correctIndex: 1
+            },
+            {
+                question: "CSS được dùng chủ yếu để làm gì trong một trang web?",
+                options: [
+                    "Xử lý logic phía máy chủ",
+                    "Định dạng giao diện và bố cục trang",
+                    "Lưu trữ dữ liệu người dùng",
+                    "Nén dữ liệu hình ảnh"
+                ],
+                correctIndex: 1
+            }
+        ]
+    },
+    {
+        questions: [
+            {
+                question: "Từ khóa nào dùng để khai báo một biến có thể thay đổi giá trị trong JavaScript?",
+                options: ["const", "let", "final", "static"],
+                correctIndex: 1
+            },
+            {
+                question: "Phương thức nào dùng để chọn một phần tử theo id trong DOM?",
+                options: [
+                    "document.querySelectorAll",
+                    "document.getElementById",
+                    "document.createElement",
+                    "document.getElementsByClass"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Toán tử nào so sánh bằng cả giá trị lẫn kiểu dữ liệu?",
+                options: ["==", "=", "===", "!="],
+                correctIndex: 2
+            }
+        ]
+    },
+    {
+        questions: [
+            {
+                question: "localStorage dùng để làm gì?",
+                options: [
+                    "Gửi email tự động",
+                    "Lưu dữ liệu ngay trên trình duyệt của người dùng",
+                    "Kết nối trực tiếp tới cơ sở dữ liệu máy chủ",
+                    "Tăng tốc độ đường truyền mạng"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Sự kiện nào được gọi khi người dùng nhấn vào một phần tử?",
+                options: ["onchange", "onclick", "onload", "onsubmit"],
+                correctIndex: 1
+            },
+            {
+                question: "Cách nào dùng để lặp qua từng phần tử của một mảng trong JavaScript?",
+                options: [
+                    "array.forEach()",
+                    "array.toString()",
+                    "array.parse()",
+                    "array.stringify()"
+                ],
+                correctIndex: 0
+            }
+        ]
+    }
+];
 
-// Đọc dữ liệu tiến độ đã lưu, nếu chưa có hoặc lỗi thì trả về object rỗng.
-function loadProgressStore() {
-    const rawData = localStorage.getItem(PROGRESS_STORAGE_KEY);
+// Điểm tối thiểu để coi là Đạt bài kiểm tra (theo đề bài: từ 70% trở lên).
+const QUIZ_PASS_PERCENT = 70;
+
+// Thoát các ký tự HTML đặc biệt để chèn text vào innerHTML một cách an toàn,
+// tránh trường hợp đáp án dạng thẻ như "<p>" bị trình duyệt hiểu nhầm thành HTML thật.
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+// Sinh id duy nhất cho một bài học, dựa trên khóa học - phần - vị trí bài học.
+function buildLessonId(courseId, sectionIndex, lessonIndex) {
+    return `c${courseId}-s${sectionIndex}-l${lessonIndex}`;
+}
+
+// Tên key lưu danh sách bài học đã hoàn thành của một khóa học trong localStorage.
+function getCompletedLessonsKey(courseId) {
+    return `learnhub_completed_lessons_${courseId}`;
+}
+
+// Đọc danh sách id bài học đã hoàn thành từ localStorage.
+function loadCompletedLessons(courseId) {
+    const rawData = localStorage.getItem(getCompletedLessonsKey(courseId));
+
+    if (!rawData) {
+        return [];
+    }
+
+    try {
+        const parsedData = JSON.parse(rawData);
+        return Array.isArray(parsedData) ? parsedData : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+// Lưu danh sách id bài học đã hoàn thành vào localStorage.
+function saveCompletedLessons(courseId, completedIds) {
+    localStorage.setItem(
+        getCompletedLessonsKey(courseId),
+        JSON.stringify(completedIds)
+    );
+}
+
+// Tên key lưu kết quả bài kiểm tra từng phần của một khóa học trong localStorage.
+function getQuizResultsKey(courseId) {
+    return `learnhub_quiz_results_${courseId}`;
+}
+
+// Đọc kết quả bài kiểm tra (pass/fail theo từng phần) từ localStorage.
+function loadQuizResults(courseId) {
+    const rawData = localStorage.getItem(getQuizResultsKey(courseId));
 
     if (!rawData) {
         return {};
     }
 
     try {
-        return JSON.parse(rawData);
+        const parsedData = JSON.parse(rawData);
+        return typeof parsedData === "object" && parsedData !== null ? parsedData : {};
     } catch (error) {
         return {};
     }
 }
 
-// Biến toàn cục lưu tiến độ của tất cả khóa học, đọc một lần khi tải trang.
-let progressStore = loadProgressStore();
+// Lưu kết quả Đạt/Không đạt của một phần vào localStorage.
+function saveQuizResult(courseId, sectionIndex, result) {
+    const quizResults = loadQuizResults(courseId);
+    quizResults[sectionIndex] = result;
 
-// Ghi lại toàn bộ progressStore vào localStorage.
-function saveProgressStore() {
     localStorage.setItem(
-        PROGRESS_STORAGE_KEY,
-        JSON.stringify(progressStore)
+        getQuizResultsKey(courseId),
+        JSON.stringify(quizResults)
     );
 }
 
-// Lấy (hoặc khởi tạo) tiến độ của một khóa học theo id.
-function getCourseProgress(courseId) {
-    if (!progressStore[courseId]) {
-        progressStore[courseId] = {
-            lessons: {},
-            quizzes: {}
-        };
-    }
-
-    return progressStore[courseId];
-}
-
-
-// ============================================================
-// PROBLEM 03 — Checkbox hoàn thành bài học + Progress Bar
-// ============================================================
-
-// Đếm tổng số bài học của khóa học.
-function countTotalLessons(course) {
-    return course.curriculum.reduce(function (total, section) {
-        return total + section.lessons.length;
-    }, 0);
-}
-
-// Đếm số bài học đã được đánh dấu hoàn thành.
-function countCompletedLessons(courseProgress) {
-    return Object.values(courseProgress.lessons)
-        .filter(Boolean).length;
-}
-
-// Cập nhật thanh Progress Bar theo số bài học đã hoàn thành.
-function renderProgressBar(course) {
-    const courseProgress = getCourseProgress(course.id);
-
-    const total = countTotalLessons(course);
-    const completed = countCompletedLessons(courseProgress);
-
-    const percent =
-        total === 0 ? 0 : Math.round((completed / total) * 100);
-
-    const progressBar =
-        document.getElementById("courseProgressBar");
-
-    progressBar.style.width = `${percent}%`;
-    progressBar.textContent = `${percent}%`;
-    progressBar.setAttribute("aria-valuenow", String(percent));
-
-    document.getElementById("progressText").textContent =
-        `${completed}/${total} bài học hoàn thành`;
-}
-
-// Xử lý khi người dùng tick/bỏ tick checkbox một bài học.
-function handleLessonCheckboxChange(checkbox) {
-    const course = getSelectedCourse();
-    const lessonKey = checkbox.dataset.lessonKey;
-
-    const courseProgress = getCourseProgress(course.id);
-    courseProgress.lessons[lessonKey] = checkbox.checked;
-    saveProgressStore();
-
-    // Đổi giao diện dòng bài học (gạch ngang khi đã hoàn thành).
-    const lessonItem = checkbox.closest(".lesson-item");
-    lessonItem.classList.toggle("lesson-completed", checkbox.checked);
-
-    renderProgressBar(course);
-}
-
-
-// ============================================================
-// PROBLEM 03 — Hệ thống Quiz (3 câu / chương)
-// ============================================================
-
-// Trộn ngẫu nhiên thứ tự các phần tử trong mảng (không đổi mảng gốc).
-function shuffleArray(items) {
-    const result = items.slice();
-
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
-    }
-
-    return result;
-}
-
-// Lấy toàn bộ tên bài học của các phần KHÁC phần đang xét (dùng làm đáp án nhiễu).
-function getLessonsOutsideSection(course, sectionIndex) {
-    const lessons = [];
-
-    course.curriculum.forEach(function (section, index) {
-        if (index !== sectionIndex) {
-            lessons.push(...section.lessons);
-        }
-    });
-
-    return lessons;
-}
-
-// Tạo câu hỏi dạng "bài học nào thuộc phần này" cho 1 bài học cụ thể.
-function buildLessonQuestion(course, section, sectionIndex, lessonIndex) {
-    const correctAnswer = section.lessons[lessonIndex];
-
-    const otherLessons = getLessonsOutsideSection(course, sectionIndex)
-        .filter(function (lesson) {
-            return lesson !== correctAnswer;
-        });
-
-    const distractors = shuffleArray(otherLessons).slice(0, 3);
-
-    // Nếu khóa học không đủ bài học khác để làm đáp án nhiễu, thêm đáp án giả.
-    while (distractors.length < 3) {
-        distractors.push(
-            `Bài học không thuộc "${section.title}" (${distractors.length + 1})`
-        );
-    }
-
-    const options = shuffleArray([correctAnswer, ...distractors]);
-
-    return {
-        question: `Bài học nào sau đây thuộc phần "${section.title}"?`,
-        options: options,
-        correctIndex: options.indexOf(correctAnswer)
-    };
-}
-
-// Tạo câu hỏi dạng "phần này có bao nhiêu bài học".
-function buildLessonCountQuestion(section) {
-    const correctCount = section.lessons.length;
-
-    const wrongCounts = [correctCount - 1, correctCount + 1, correctCount + 2]
-        .filter(function (count) {
-            return count > 0 && count !== correctCount;
-        });
-
-    const options = shuffleArray([correctCount, ...wrongCounts.slice(0, 3)])
-        .map(String);
-
-    return {
-        question: `Phần "${section.title}" có tất cả bao nhiêu bài học?`,
-        options: options,
-        correctIndex: options.indexOf(String(correctCount))
-    };
-}
-
-// Tạo đúng 3 câu hỏi cho một phần (chương) học.
-function buildQuizForSection(course, section, sectionIndex) {
-    const secondLessonIndex =
-        section.lessons.length > 1 ? 1 : 0;
-
-    return [
-        buildLessonQuestion(course, section, sectionIndex, 0),
-        buildLessonQuestion(course, section, sectionIndex, secondLessonIndex),
-        buildLessonCountQuestion(section)
-    ];
-}
-
-// Tạo ngân hàng câu hỏi cho toàn bộ các phần của khóa học.
-function buildQuizBank(course) {
-    return course.curriculum.map(function (section, sectionIndex) {
-        return buildQuizForSection(course, section, sectionIndex);
-    });
-}
-
-// Ngân hàng câu hỏi quiz của khóa học đang xem, tạo lại mỗi khi vào trang.
-let quizBank = [];
-
-// Lưu phần (chương) đang làm quiz để biết chấm điểm cho phần nào.
-let currentQuizSectionIndex = null;
-
-// Hiển thị modal quiz với 3 câu hỏi của phần được chọn.
-function openQuizModal(sectionIndex) {
-    const course = getSelectedCourse();
+// Kiểm tra một phần học đã hoàn thành hết bài học hay chưa.
+function isSectionComplete(course, sectionIndex, completedIds) {
     const section = course.curriculum[sectionIndex];
-    const questions = quizBank[sectionIndex];
 
-    currentQuizSectionIndex = sectionIndex;
-
-    document.getElementById("quizModalLabel").textContent =
-        `Bài kiểm tra - ${section.title}`;
-
-    const quizModalBody = document.getElementById("quizModalBody");
-
-    quizModalBody.innerHTML = questions
-        .map(function (question, questionIndex) {
-            const optionsHtml = question.options
-                .map(function (option, optionIndex) {
-                    const inputId = `quiz-q${questionIndex}-opt${optionIndex}`;
-
-                    return `
-                        <div class="form-check">
-
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="quiz-question-${questionIndex}"
-                                id="${inputId}"
-                                value="${optionIndex}"
-                            >
-
-                            <label class="form-check-label" for="${inputId}">
-                                ${option}
-                            </label>
-
-                        </div>
-                    `;
-                })
-                .join("");
-
-            return `
-                <div class="quiz-question">
-
-                    <p class="quiz-question-text">
-                        Câu ${questionIndex + 1}: ${question.question}
-                    </p>
-
-                    <div class="quiz-options">
-                        ${optionsHtml}
-                    </div>
-
-                </div>
-            `;
-        })
-        .join("");
-
-    // Xóa kết quả và mở lại nút Nộp bài mỗi lần mở quiz mới.
-    document.getElementById("quizResultMessage").innerHTML = "";
-    document.getElementById("quizSubmitBtn").disabled = false;
-
-    const quizModalElement = document.getElementById("quizModal");
-    const quizModal = bootstrap.Modal.getOrCreateInstance(quizModalElement);
-    quizModal.show();
-}
-
-// Cập nhật badge Pass/Fail hiển thị cạnh nút làm bài của một phần.
-function renderQuizBadge(sectionIndex, quizResult) {
-    const badge =
-        document.getElementById(`quizBadge-${sectionIndex}`);
-
-    if (!badge) {
-        return;
-    }
-
-    if (quizResult.passed) {
-        badge.textContent =
-            `Đã đạt (${quizResult.score}/${quizResult.total})`;
-        badge.className = "quiz-status-badge quiz-status-pass";
-    } else {
-        badge.textContent =
-            `Chưa đạt (${quizResult.score}/${quizResult.total})`;
-        badge.className = "quiz-status-badge quiz-status-fail";
-    }
-}
-
-// Chấm điểm khi người dùng bấm nút "Nộp bài".
-function handleQuizSubmit() {
-    const course = getSelectedCourse();
-    const sectionIndex = currentQuizSectionIndex;
-    const questions = quizBank[sectionIndex];
-
-    let answeredCount = 0;
-    let correctCount = 0;
-
-    questions.forEach(function (question, questionIndex) {
-        const selectedInput = document.querySelector(
-            `input[name="quiz-question-${questionIndex}"]:checked`
-        );
-
-        if (selectedInput) {
-            answeredCount++;
-
-            if (Number(selectedInput.value) === question.correctIndex) {
-                correctCount++;
-            }
-        }
+    return section.lessons.every(function (lesson, lessonIndex) {
+        const lessonId = buildLessonId(course.id, sectionIndex, lessonIndex);
+        return completedIds.includes(lessonId);
     });
+}
 
-    const resultMessage =
-        document.getElementById("quizResultMessage");
+// Vẽ lại thanh tiến độ tổng "X / Y bài học đã hoàn thành" ở đầu phần chương trình học.
+function renderCurriculumProgress(course, completedIds) {
+    const progressContainer = document.getElementById("curriculumProgress");
 
-    // Bắt buộc trả lời đủ 3 câu trước khi chấm điểm.
-    if (answeredCount < questions.length) {
-        resultMessage.innerHTML =
-            `<span class="text-danger">Vui lòng trả lời hết ${questions.length} câu hỏi.</span>`;
+    if (!progressContainer) {
         return;
     }
 
-    const passed = correctCount >= QUIZ_PASS_SCORE;
+    const totalLessons = course.curriculum.reduce(function (sum, section) {
+        return sum + section.lessons.length;
+    }, 0);
 
-    const courseProgress = getCourseProgress(course.id);
-    const quizResult = {
-        score: correctCount,
-        total: questions.length,
-        passed: passed
-    };
+    const doneCount = completedIds.length;
+    const percent = totalLessons === 0 ? 0 : Math.round((doneCount / totalLessons) * 100);
 
-    courseProgress.quizzes[sectionIndex] = quizResult;
-    saveProgressStore();
+    progressContainer.innerHTML = `
+        <div class="curriculum-progress-label">
+            ${doneCount} / ${totalLessons} bài học đã hoàn thành
+        </div>
 
-    resultMessage.innerHTML = passed
-        ? `<span class="text-success">Đạt! Trả lời đúng ${correctCount}/${questions.length} câu.</span>`
-        : `<span class="text-danger">Chưa đạt. Đúng ${correctCount}/${questions.length} câu (cần tối thiểu ${QUIZ_PASS_SCORE} câu để Pass).</span>`;
-
-    // Khóa nút Nộp bài lại, tránh nộp nhiều lần cho cùng một lượt làm bài.
-    document.getElementById("quizSubmitBtn").disabled = true;
-
-    renderQuizBadge(sectionIndex, quizResult);
+        <div class="progress" role="progressbar" aria-label="Tiến độ học tập">
+            <div
+                class="progress-bar bg-success"
+                style="width: ${percent}%"
+                aria-valuenow="${percent}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+            ></div>
+        </div>
+    `;
 }
 
+// Bật hoặc tắt huy hiệu hoàn thành trên tiêu đề một phần, tuỳ theo phần đó đã học xong hết chưa.
+function updateSectionBadge(course, sectionIndex, completedIds) {
+    const headingEl = document.getElementById(`heading-${sectionIndex}`);
 
-// ============================================================
-// Chương trình học (Accordion) — có checkbox + nút làm quiz
-// ============================================================
+    if (!headingEl) {
+        return;
+    }
 
-// Tạo danh sách bài học của một phần, kèm checkbox hoàn thành.
-function createLessonList(section, sectionIndex, courseProgress) {
+    const badgeEl = headingEl.querySelector(".section-complete-badge");
+
+    if (!badgeEl) {
+        return;
+    }
+
+    if (isSectionComplete(course, sectionIndex, completedIds)) {
+        badgeEl.classList.remove("d-none");
+    } else {
+        badgeEl.classList.add("d-none");
+    }
+}
+
+// Tạo danh sách bài học của một phần, mỗi bài học có một checkbox đánh dấu hoàn thành.
+function createLessonList(section, sectionIndex, courseId, completedIds) {
     return section.lessons
         .map(function (lesson, lessonIndex) {
-            const lessonKey = `${sectionIndex}-${lessonIndex}`;
-            const isCompleted = Boolean(courseProgress.lessons[lessonKey]);
-
-            const itemClass = isCompleted
-                ? "list-group-item lesson-item lesson-completed"
-                : "list-group-item lesson-item";
+            const lessonId = buildLessonId(courseId, sectionIndex, lessonIndex);
+            const isChecked = completedIds.includes(lessonId);
 
             return `
-                <li class="${itemClass}">
+                <li class="list-group-item lesson-item">
 
                     <div class="lesson-item-main">
 
                         <input
                             class="form-check-input lesson-checkbox"
                             type="checkbox"
-                            id="lesson-${lessonKey}"
-                            data-lesson-key="${lessonKey}"
-                            ${isCompleted ? "checked" : ""}
+                            id="${lessonId}"
+                            data-lesson-id="${lessonId}"
+                            data-section-index="${sectionIndex}"
+                            ${isChecked ? "checked" : ""}
                         >
 
-                        <label for="lesson-${lessonKey}">
-
+                        <label class="lesson-item-label" for="${lessonId}">
                             <span class="lesson-number">
                                 ${lessonIndex + 1}
                             </span>
 
                             <span>
-                                ${lesson}
+                                ${escapeHtml(lesson)}
                             </span>
-
                         </label>
 
                     </div>
@@ -507,49 +388,261 @@ function createLessonList(section, sectionIndex, courseProgress) {
         .join("");
 }
 
-// Tạo khối nút "Làm bài kiểm tra" + badge Pass/Fail cho một phần.
-function createSectionQuizFooter(sectionIndex, courseProgress) {
-    const quizResult = courseProgress.quizzes[sectionIndex];
+// Tạo phần chữ cái a), b), c)... đứng trước mỗi đáp án trắc nghiệm.
+function optionLetter(optionIndex) {
+    return String.fromCharCode(97 + optionIndex);
+}
 
-    let badgeClass = "quiz-status-badge";
-    let badgeText = "Chưa làm bài kiểm tra";
+// Vẽ form bài kiểm tra (câu hỏi + các đáp án radio + nút nộp bài) cho một phần học.
+function renderQuizForm(course, sectionIndex) {
+    const sectionQuiz = quizBank[sectionIndex];
+    const sectionTitle = course.curriculum[sectionIndex].title;
 
-    if (quizResult) {
-        badgeClass = quizResult.passed
-            ? "quiz-status-badge quiz-status-pass"
-            : "quiz-status-badge quiz-status-fail";
+    const questionsHtml = sectionQuiz.questions
+        .map(function (question, questionIndex) {
+            const optionsHtml = question.options
+                .map(function (option, optionIndex) {
+                    const inputId = `quiz-${sectionIndex}-${questionIndex}-${optionIndex}`;
 
-        badgeText = quizResult.passed
-            ? `Đã đạt (${quizResult.score}/${quizResult.total})`
-            : `Chưa đạt (${quizResult.score}/${quizResult.total})`;
-    }
+                    return `
+                        <div class="quiz-option">
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="quiz-${sectionIndex}-q${questionIndex}"
+                                id="${inputId}"
+                                value="${optionIndex}"
+                            >
+
+                            <label class="form-check-label" for="${inputId}">
+                                ${optionLetter(optionIndex)}) ${escapeHtml(option)}
+                            </label>
+                        </div>
+                    `;
+                })
+                .join("");
+
+            return `
+                <div class="quiz-question">
+                    <p class="quiz-question-text">
+                        Câu ${questionIndex + 1}. ${escapeHtml(question.question)}
+                    </p>
+
+                    <div class="quiz-options">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            `;
+        })
+        .join("");
 
     return `
-        <div class="section-quiz-footer">
+        <h3 class="quiz-title">
+            Bài kiểm tra: ${escapeHtml(sectionTitle)}
+        </h3>
 
-            <span id="quizBadge-${sectionIndex}" class="${badgeClass}">
-                ${badgeText}
-            </span>
+        ${questionsHtml}
 
-            <button
-                type="button"
-                class="btn btn-outline-primary btn-sm quiz-start-btn"
-                data-section-index="${sectionIndex}"
-            >
-                📝 Làm bài kiểm tra (3 câu)
-            </button>
-
-        </div>
+        <button
+            type="button"
+            class="btn btn-primary quiz-submit-btn"
+            data-section-index="${sectionIndex}"
+        >
+            Nộp bài
+        </button>
     `;
 }
 
+// Mở hoặc đóng bảng bài kiểm tra khi bấm nút "Làm bài kiểm tra".
+function toggleQuizPanel(course, sectionIndex) {
+    const panelEl = document.getElementById(`quiz-panel-${sectionIndex}`);
 
-// Hiển thị Bootstrap Accordion cho chương trình khóa học.
+    if (!panelEl) {
+        return;
+    }
+
+    const isHidden = panelEl.classList.contains("d-none");
+
+    // Nếu bảng chưa có nội dung, vẽ form câu hỏi lần đầu tiên.
+    if (isHidden && panelEl.innerHTML.trim() === "") {
+        panelEl.innerHTML = renderQuizForm(course, sectionIndex);
+    }
+
+    panelEl.classList.toggle("d-none");
+}
+
+// Mở accordion của phần học kế tiếp sau khi người học đã Đạt bài kiểm tra.
+function openNextSection(sectionIndex) {
+    const nextCollapseEl = document.getElementById(`collapse-${sectionIndex + 1}`);
+
+    if (!nextCollapseEl) {
+        return;
+    }
+
+    const nextCollapse = bootstrap.Collapse.getOrCreateInstance(nextCollapseEl);
+    nextCollapse.show();
+
+    nextCollapseEl.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// Chấm điểm bài kiểm tra, hiển thị kết quả từng câu (đúng màu xanh, sai màu đỏ) và thông báo Đạt/Không đạt.
+function handleQuizSubmit(course, sectionIndex, panelEl) {
+    const sectionQuiz = quizBank[sectionIndex];
+    let correctCount = 0;
+
+    const resultQuestionsHtml = sectionQuiz.questions
+        .map(function (question, questionIndex) {
+            const checkedInput = panelEl.querySelector(
+                `input[name="quiz-${sectionIndex}-q${questionIndex}"]:checked`
+            );
+            const selectedIndex = checkedInput ? Number(checkedInput.value) : -1;
+
+            if (selectedIndex === question.correctIndex) {
+                correctCount++;
+            }
+
+            const optionsHtml = question.options
+                .map(function (option, optionIndex) {
+                    let optionClass = "quiz-option-result";
+
+                    if (optionIndex === question.correctIndex) {
+                        optionClass += " correct";
+                    } else if (optionIndex === selectedIndex) {
+                        optionClass += " wrong";
+                    }
+
+                    return `
+                        <div class="${optionClass}">
+                            ${optionLetter(optionIndex)}) ${escapeHtml(option)}
+                        </div>
+                    `;
+                })
+                .join("");
+
+            return `
+                <div class="quiz-question">
+                    <p class="quiz-question-text">
+                        Câu ${questionIndex + 1}. ${escapeHtml(question.question)}
+                    </p>
+
+                    <div class="quiz-options">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            `;
+        })
+        .join("");
+
+    const totalQuestions = sectionQuiz.questions.length;
+    const percent = Math.round((correctCount / totalQuestions) * 100);
+    const passed = percent >= QUIZ_PASS_PERCENT;
+    const hasNextSection = sectionIndex < course.curriculum.length - 1;
+
+    saveQuizResult(course.id, sectionIndex, passed ? "pass" : "fail");
+
+    const bannerHtml = passed
+        ? `
+            <div class="quiz-result-banner pass">
+                <span><i class="bi bi-patch-check-fill"></i> Chúc mừng, bạn đã Đạt bài kiểm tra! (${correctCount} / ${totalQuestions} câu đúng)</span>
+
+                ${hasNextSection
+                    ? `<button type="button" class="btn btn-success quiz-continue-btn" data-section-index="${sectionIndex}">Tiếp tục phần sau</button>`
+                    : ""}
+            </div>
+        `
+        : `
+            <div class="quiz-result-banner fail">
+                <span>Bạn chưa Đạt bài kiểm tra (${correctCount} / ${totalQuestions} câu đúng). Cần đúng từ ${QUIZ_PASS_PERCENT}% trở lên.</span>
+
+                <button type="button" class="btn btn-warning quiz-retake-btn" data-section-index="${sectionIndex}">Làm lại bài kiểm tra</button>
+            </div>
+        `;
+
+    panelEl.innerHTML = `
+        <h3 class="quiz-title">
+            Kết quả: ${escapeHtml(course.curriculum[sectionIndex].title)}
+        </h3>
+
+        ${resultQuestionsHtml}
+
+        ${bannerHtml}
+    `;
+}
+
+// Gắn toàn bộ sự kiện cho Problem 03: tick bài học, làm bài kiểm tra, nộp bài, làm lại, tiếp tục.
+function initLessonAndQuizEvents(course) {
+    const curriculumAccordion = document.getElementById("curriculumAccordion");
+
+    if (!curriculumAccordion) {
+        return;
+    }
+
+    // Tick checkbox bài học: lưu lại tiến độ và cập nhật thanh tiến độ + huy hiệu phần học.
+    curriculumAccordion.addEventListener("change", function (event) {
+        if (!event.target.classList.contains("lesson-checkbox")) {
+            return;
+        }
+
+        const checkboxEl = event.target;
+        const lessonId = checkboxEl.dataset.lessonId;
+        const sectionIndex = Number(checkboxEl.dataset.sectionIndex);
+
+        let completedIds = loadCompletedLessons(course.id);
+
+        if (checkboxEl.checked) {
+            if (!completedIds.includes(lessonId)) {
+                completedIds.push(lessonId);
+            }
+        } else {
+            completedIds = completedIds.filter(function (id) {
+                return id !== lessonId;
+            });
+        }
+
+        saveCompletedLessons(course.id, completedIds);
+        renderCurriculumProgress(course, completedIds);
+        updateSectionBadge(course, sectionIndex, completedIds);
+    });
+
+    // Xử lý các nút bấm liên quan tới bài kiểm tra bằng cách bắt sự kiện click trên toàn bộ accordion.
+    curriculumAccordion.addEventListener("click", function (event) {
+        const takeQuizBtn = event.target.closest(".take-quiz-btn");
+        if (takeQuizBtn) {
+            toggleQuizPanel(course, Number(takeQuizBtn.dataset.sectionIndex));
+            return;
+        }
+
+        const submitBtn = event.target.closest(".quiz-submit-btn");
+        if (submitBtn) {
+            const sectionIndex = Number(submitBtn.dataset.sectionIndex);
+            const panelEl = document.getElementById(`quiz-panel-${sectionIndex}`);
+            handleQuizSubmit(course, sectionIndex, panelEl);
+            return;
+        }
+
+        const retakeBtn = event.target.closest(".quiz-retake-btn");
+        if (retakeBtn) {
+            const sectionIndex = Number(retakeBtn.dataset.sectionIndex);
+            const panelEl = document.getElementById(`quiz-panel-${sectionIndex}`);
+            panelEl.innerHTML = renderQuizForm(course, sectionIndex);
+            return;
+        }
+
+        const continueBtn = event.target.closest(".quiz-continue-btn");
+        if (continueBtn) {
+            openNextSection(Number(continueBtn.dataset.sectionIndex));
+        }
+    });
+}
+
+
+// Hiển thị Bootstrap Accordion cho chương trình khóa học, kèm checkbox tiến độ và nút làm bài kiểm tra.
 function renderCurriculum(course) {
     const curriculumAccordion =
         document.getElementById("curriculumAccordion");
 
-    const courseProgress = getCourseProgress(course.id);
+    const completedIds = loadCompletedLessons(course.id);
+    const quizResults = loadQuizResults(course.id);
 
     curriculumAccordion.innerHTML = course.curriculum
         .map(function (section, sectionIndex) {
@@ -583,6 +676,18 @@ function renderCurriculum(course) {
                     ? "true"
                     : "false";
 
+            // Huy hiệu hoàn thành chỉ hiện khi toàn bộ bài học trong phần đã được tick hoàn thành.
+            const badgeHiddenClass =
+                isSectionComplete(course, sectionIndex, completedIds)
+                    ? ""
+                    : " d-none";
+
+            // Nếu người học đã Đạt bài kiểm tra của phần này thì hiện thêm nhãn nhỏ bên cạnh nút.
+            const passedTagHtml =
+                quizResults[sectionIndex] === "pass"
+                    ? `<span class="quiz-passed-tag"><i class="bi bi-check-circle-fill"></i> Đã đạt bài kiểm tra</span>`
+                    : "";
+
             return `
                 <div class="accordion-item">
 
@@ -599,8 +704,13 @@ function renderCurriculum(course) {
                             aria-expanded="${expandedValue}"
                             aria-controls="${collapseId}"
                         >
-                            ${section.title}
-                            — ${section.lessons.length} bài học
+                            <span class="accordion-title-text">
+                                ${escapeHtml(section.title)} — ${section.lessons.length} bài học
+                            </span>
+
+                            <span class="section-complete-badge${badgeHiddenClass}">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </span>
                         </button>
 
                     </h2>
@@ -615,10 +725,31 @@ function renderCurriculum(course) {
                         <div class="accordion-body p-0">
 
                             <ul class="list-group list-group-flush">
-                                ${createLessonList(section, sectionIndex, courseProgress)}
+                                ${createLessonList(section, sectionIndex, course.id, completedIds)}
                             </ul>
 
-                            ${createSectionQuizFooter(sectionIndex, courseProgress)}
+                            <div class="section-quiz-area">
+
+                                <div class="quiz-toggle-row">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary take-quiz-btn"
+                                        data-section-index="${sectionIndex}"
+                                    >
+                                        <i class="bi bi-pencil-square"></i> Làm bài kiểm tra
+                                    </button>
+
+                                    ${passedTagHtml}
+
+                                </div>
+
+                                <div
+                                    id="quiz-panel-${sectionIndex}"
+                                    class="quiz-panel d-none"
+                                ></div>
+
+                            </div>
 
                         </div>
 
@@ -628,13 +759,13 @@ function renderCurriculum(course) {
             `;
         })
         .join("");
+
+    renderCurriculumProgress(course, completedIds);
 }
 
 
 // Hiển thị toàn bộ thông tin khóa học lên trang.
-function renderCourseDetail() {
-    const course = getSelectedCourse();
-
+function renderCourseDetail(course) {
     /*
         Thay đổi tiêu đề trên tab trình duyệt.
     */
@@ -664,9 +795,10 @@ function renderCourseDetail() {
 
     /*
         Hiển thị điểm đánh giá và số lượt đánh giá.
+        Dùng innerHTML vì cần chèn icon ngôi sao Bootstrap Icons phía trước.
     */
-    document.getElementById("courseRating").textContent =
-        `⭐ ${course.rating} (${course.reviews} đánh giá)`;
+    document.getElementById("courseRating").innerHTML =
+        `<i class="bi bi-star-fill text-warning"></i> ${course.rating} (${course.reviews} đánh giá)`;
 
     /*
         Hiển thị số lượng học viên.
@@ -718,52 +850,13 @@ function renderCourseDetail() {
     renderCourseDescription(course);
 
     renderCurriculum(course);
-
-    // Problem 3: tạo ngân hàng câu hỏi quiz và cập nhật thanh tiến độ.
-    quizBank = buildQuizBank(course);
-
-    renderProgressBar(course);
 }
 
 
-// Gắn sự kiện tick checkbox bài học (dùng event delegation).
-function initLessonProgressEvents() {
-    const curriculumAccordion =
-        document.getElementById("curriculumAccordion");
-
-    curriculumAccordion.addEventListener("change", function (event) {
-        if (!event.target.classList.contains("lesson-checkbox")) {
-            return;
-        }
-
-        handleLessonCheckboxChange(event.target);
-    });
-}
-
-// Gắn sự kiện mở quiz và nộp bài quiz.
-function initQuizEvents() {
-    const curriculumAccordion =
-        document.getElementById("curriculumAccordion");
-
-    curriculumAccordion.addEventListener("click", function (event) {
-        const quizButton = event.target.closest(".quiz-start-btn");
-
-        if (!quizButton) {
-            return;
-        }
-
-        const sectionIndex = Number(quizButton.dataset.sectionIndex);
-        openQuizModal(sectionIndex);
-    });
-
-    document.getElementById("quizSubmitBtn")
-        .addEventListener("click", handleQuizSubmit);
-}
-
-
-// Chạy hàm sau khi toàn bộ HTML đã tải xong.
+// Chạy sau khi toàn bộ HTML đã tải xong: hiển thị khóa học rồi bật tính năng Problem 03.
 document.addEventListener("DOMContentLoaded", function () {
-    renderCourseDetail();
-    initLessonProgressEvents();
-    initQuizEvents();
+    const course = getSelectedCourse();
+
+    renderCourseDetail(course);
+    initLessonAndQuizEvents(course);
 });

@@ -189,6 +189,7 @@ p {
 
 .feature-icon {
     margin-bottom: 15px;
+    color: #0d6efd;
     font-size: 45px;
 }
 
@@ -208,6 +209,16 @@ p {
 
 .course-section {
     padding: 85px 0;
+}
+
+/* Hàng chứa Category Tabs + Sort Dropdown, index.html dùng class này để xếp 2 khối nằm ngang */
+.course-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 40px;
 }
 
 .category-tabs {
@@ -233,6 +244,84 @@ p {
     border-color: #0d6efd;
     background-color: #0d6efd;
     color: #ffffff;
+}
+
+/* Sort dropdown */
+.sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sort-label {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0;
+}
+
+.sort-select {
+    padding: 8px 14px;
+    border: 1px solid #dee2e6;
+    border-radius: 30px;
+    background-color: #ffffff;
+    color: #495057;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    min-width: 185px;
+    transition: border-color 0.2s;
+}
+
+.sort-select:focus {
+    border-color: #0d6efd;
+}
+
+/* Nút xóa nhanh bên trong ô tìm kiếm navbar */
+.search-clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 2px 5px;
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.search-clear-btn:hover {
+    color: #212529;
+}
+
+/* Thông báo không tìm thấy kết quả */
+.no-result-message {
+    width: 100%;
+    padding: 70px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.no-result-icon {
+    margin-bottom: 16px;
+    font-size: 56px;
+}
+
+.no-result-message h3 {
+    margin-bottom: 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #343a40;
+}
+
+.no-result-message p {
+    font-size: 15px;
+    margin: 0;
 }
 
 .course-card {
@@ -581,6 +670,149 @@ p {
     font-weight: 700;
 }
 
+/* Problem 03: thanh tiến độ học tập phía trên accordion chương trình học */
+.curriculum-progress {
+    margin-bottom: 20px;
+}
+
+.curriculum-progress-label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.curriculum-progress .progress {
+    height: 10px;
+    border-radius: 30px;
+}
+
+/* Huy hiệu hoàn thành trên tiêu đề một phần khi đã học xong hết bài học trong phần đó */
+.section-complete-badge {
+    margin-left: auto;
+    margin-right: 12px;
+    color: #198754;
+    font-size: 16px;
+}
+
+/* Dòng bài học: checkbox tiến độ đứng cạnh tên bài học */
+.lesson-item-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lesson-checkbox {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.lesson-item-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Khu vực nút Làm bài kiểm tra và bảng câu hỏi bên dưới danh sách bài học */
+.section-quiz-area {
+    padding: 18px 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.quiz-toggle-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.quiz-passed-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: #198754;
+}
+
+.quiz-panel {
+    margin-top: 18px;
+}
+
+.quiz-title {
+    margin-bottom: 18px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.quiz-question {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.quiz-question:last-of-type {
+    border-bottom: 0;
+}
+
+.quiz-question-text {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Kết quả từng câu sau khi nộp bài: đúng tô xanh, sai tô đỏ */
+.quiz-option-result {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.quiz-option-result.correct {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    font-weight: 700;
+}
+
+.quiz-option-result.wrong {
+    background-color: #f8d7da;
+    color: #842029;
+    font-weight: 700;
+}
+
+.quiz-result-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 10px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.quiz-result-banner.pass {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.quiz-result-banner.fail {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
 
 /* ================= THANH THÔNG TIN BÊN PHẢI ================= */
 
@@ -629,6 +861,11 @@ p {
     padding: 0;
     list-style: none;
     color: #495057;
+}
+
+.course-includes i {
+    margin-right: 6px;
+    color: #198754;
 }
 
 
@@ -718,7 +955,29 @@ p {
         align-items: flex-start;
         flex-direction: column;
     }
+
+    /* Problem 02: mobile — controls xếp dọc */
+    .course-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sort-wrapper {
+        width: 100%;
+    }
+
+    .sort-select {
+        flex: 1;
+        min-width: unset;
+    }
+
+    /* Problem 03: mobile — banner kết quả bài kiểm tra xếp dọc cho dễ đọc */
+    .quiz-result-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
+
 
 /* ================= ADMIN PANEL ================= */
 
@@ -951,6 +1210,12 @@ p {
     }
 
     .admin-table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Problem 03: mobile — banner kết quả bài kiểm tra xếp dọc cho dễ đọc */
+    .quiz-result-banner {
         flex-direction: column;
         align-items: flex-start;
     }
