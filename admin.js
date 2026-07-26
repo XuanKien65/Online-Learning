@@ -28,6 +28,7 @@ const COURSES_PER_PAGE = 5;
     adminCourses: toàn bộ danh sách khóa học (nguồn dữ liệu chính).
     currentPage: trang hiện tại đang hiển thị.
     activeFilters: các điều kiện tìm kiếm / lọc đang được áp dụng.
+    courseToDeleteId: ID của khóa học đang chờ được xác nhận xóa.
 */
 let adminCourses = [];
 
@@ -39,8 +40,6 @@ let activeFilters = {
     status: "all"
 };
 
-let courseFormModal = null;
-let deleteConfirmModal = null;
 let courseToDeleteId = null;
 
 
@@ -579,41 +578,88 @@ function handlePaginationClick(event) {
 }
 
 
+/* ==========================================================
+                    PHẦN CRUD BỔ SUNG
+   ========================================================== */
+
+// Lấy Modal Bootstrap (sử dụng Singleton Pattern được Bootstrap cung cấp)
+function getCourseFormModal() {
+    return bootstrap.Modal.getOrCreateInstance(document.getElementById("courseFormModal"));
+}
+
+function getDeleteConfirmModal() {
+    return bootstrap.Modal.getOrCreateInstance(document.getElementById("deleteConfirmModal"));
+}
+
+// Hiển thị Toast thông báo
+function showToast(message) {
+    const toastContainer = document.getElementById("toastContainer");
+    const toastHtml = `
+        <div class="toast align-items-center text-white bg-success border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Đóng"></button>
+            </div>
+        </div>
+    `;
+    
+    toastContainer.insertAdjacentHTML("beforeend", toastHtml);
+    const toastElement = toastContainer.lastElementChild;
+    const toastInstance = new bootstrap.Toast(toastElement, { delay: 3000 });
+    
+    toastInstance.show();
+
+    // Dọn dẹp DOM sau khi toast biến mất
+    toastElement.addEventListener('hidden.bs.toast', function () {
+        toastElement.remove();
+    });
+}
+
+
 /*
     Xử lý sự kiện bấm nút Sửa hoặc Xóa trên một dòng khóa học.
-
-    Cũng dùng event delegation vì các dòng trong bảng được tạo lại
-    (innerHTML) mỗi lần render.
-
-    Logic mở modal Sửa / Xóa thật sự sẽ được triển khai ở phần CRUD
-    tiếp theo của Problem 04. Ở đây chỉ ghi log để xác nhận đã bắt
-    đúng sự kiện và đúng khóa học được chọn.
 */
 function handleTableActionClick(event) {
     const editButton = event.target.closest(".btn-edit-course");
     const deleteButton = event.target.closest(".btn-delete-course");
 
+    // Xử lý nút Sửa (UPDATE)
     if (editButton) {
         const courseId = Number(editButton.dataset.courseId);
-        const selectedCourse = adminCourses.find(function (course) {
-            return course.id === courseId;
-        });
+        const course = adminCourses.find(c => c.id === courseId);
 
-        if (selectedCourse) {
-            openEditCourseModal(selectedCourse);
+        if (course) {
+            const form = document.getElementById("courseForm");
+            form.reset();
+            form.classList.remove("was-validated");
+
+            // Điền dữ liệu vào form
+            document.getElementById("courseFormId").value = course.id;
+            document.getElementById("courseFormTitle").value = course.title;
+            document.getElementById("courseFormCategory").value = course.category;
+            document.getElementById("courseFormInstructor").value = course.instructor;
+            document.getElementById("courseFormLessons").value = course.lessons;
+            document.getElementById("courseFormPrice").value = course.price;
+            document.getElementById("courseFormRating").value = course.rating;
+            document.getElementById("courseFormStatus").value = course.status;
+
+            document.getElementById("courseFormModalLabel").textContent = "Sửa khóa học";
+            getCourseFormModal().show();
         }
-
         return;
     }
 
+    // Xử lý nút Xóa (DELETE)
     if (deleteButton) {
         const courseId = Number(deleteButton.dataset.courseId);
-        const selectedCourse = adminCourses.find(function (course) {
-            return course.id === courseId;
-        });
+        const course = adminCourses.find(c => c.id === courseId);
 
-        if (selectedCourse) {
-            openDeleteConfirmModal(selectedCourse);
+        if (course) {
+            courseToDeleteId = courseId;
+            document.getElementById("deleteConfirmCourseTitle").textContent = course.title;
+            getDeleteConfirmModal().show();
         }
     }
 }
@@ -623,7 +669,93 @@ function handleTableActionClick(event) {
     Xử lý sự kiện bấm nút "+ Thêm khóa học mới".
 */
 function handleAddCourseClick() {
-    openAddCourseModal();
+    const form = document.getElementById("courseForm");
+    
+    // Reset form và xóa class xác thực
+    form.reset();
+    form.classList.remove("was-validated");
+    document.getElementById("courseFormId").value = "";
+    
+    // Cập nhật tiêu đề Modal và hiển thị
+    document.getElementById("courseFormModalLabel").textContent = "Thêm khóa học mới";
+    getCourseFormModal().show();
+}
+
+/*
+    Xử lý sự kiện Lưu (CREATE / UPDATE)
+*/
+function handleSaveCourseClick() {
+    const form = document.getElementById("courseForm");
+
+    // Validate dữ liệu
+    if (!form.checkValidity()) {
+        form.classList.add("was-validated");
+        return;
+    }
+
+    const idField = document.getElementById("courseFormId").value;
+    const isEditing = idField !== "";
+
+    // Lấy object khóa học từ form
+    const courseData = {
+        title: document.getElementById("courseFormTitle").value.trim(),
+        category: document.getElementById("courseFormCategory").value,
+        instructor: document.getElementById("courseFormInstructor").value.trim(),
+        lessons: Number(document.getElementById("courseFormLessons").value),
+        price: Number(document.getElementById("courseFormPrice").value),
+        rating: Number(document.getElementById("courseFormRating").value),
+        status: document.getElementById("courseFormStatus").value
+    };
+
+    if (isEditing) {
+        // UPDATE (Cập nhật)
+        const courseId = Number(idField);
+        const index = adminCourses.findIndex(c => c.id === courseId);
+        if (index !== -1) {
+            // Hợp nhất dữ liệu mới vào khóa học cũ
+            adminCourses[index] = { ...adminCourses[index], ...courseData };
+            showToast("Course updated.");
+        }
+    } else {
+        // CREATE (Tạo mới)
+        let newId = 1;
+        if (adminCourses.length > 0) {
+            newId = Math.max(...adminCourses.map(c => c.id)) + 1;
+        }
+        courseData.id = newId;
+        adminCourses.push(courseData);
+        showToast("Course created.");
+    }
+
+    // Lưu vào localStorage, render lại giao diện và đóng Modal
+    writeCoursesToStorage(adminCourses);
+    renderCoursesTable();
+    getCourseFormModal().hide();
+}
+
+/*
+    Xử lý sự kiện Xác nhận Xóa
+*/
+function executeDeleteCourse() {
+    if (courseToDeleteId !== null) {
+        // Lọc bỏ phần tử cần xóa
+        adminCourses = adminCourses.filter(c => c.id !== courseToDeleteId);
+
+        // Lưu dữ liệu và render lại
+        writeCoursesToStorage(adminCourses);
+        renderCoursesTable();
+
+        // Kiểm tra xem khóa học đang xóa có đang được mở trong Modal Sửa không.
+        // Nếu có, đóng Modal Sửa.
+        const currentEditId = document.getElementById("courseFormId").value;
+        if (currentEditId !== "" && Number(currentEditId) === courseToDeleteId) {
+            getCourseFormModal().hide();
+        }
+
+        getDeleteConfirmModal().hide();
+        showToast("Course deleted.");
+        courseToDeleteId = null; // Đặt lại sau khi xóa
+    }
 }
 
 
@@ -652,23 +784,15 @@ function initEventListeners() {
     document
         .getElementById("btnAddCourse")
         .addEventListener("click", handleAddCourseClick);
-
+        
+    // Events cho phần CRUD mới
     document
         .getElementById("saveCourseBtn")
-        .addEventListener("click", handleCourseFormSave);
+        .addEventListener("click", handleSaveCourseClick);
 
     document
         .getElementById("confirmDeleteBtn")
-        .addEventListener("click", handleDeleteConfirm);
-
-    const courseForm = document.getElementById("courseForm");
-    courseForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        handleCourseFormSave();
-    });
-
-    courseFormModal = bootstrap.Modal.getOrCreateInstance(document.getElementById("courseFormModal"));
-    deleteConfirmModal = bootstrap.Modal.getOrCreateInstance(document.getElementById("deleteConfirmModal"));
+        .addEventListener("click", executeDeleteCourse);
 }
 
 
