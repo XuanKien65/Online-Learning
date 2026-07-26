@@ -372,6 +372,149 @@ function renderCoursesTable() {
 }
 
 
+function resetCourseForm() {
+    const courseForm = document.getElementById("courseForm");
+    courseForm.reset();
+    document.getElementById("courseFormId").value = "";
+    document.getElementById("courseFormCategory").value = "Web Dev";
+    document.getElementById("courseFormStatus").value = "published";
+    courseForm.classList.remove("was-validated");
+}
+
+
+function showToast(message, type) {
+    const toastContainer = document.getElementById("toastContainer");
+    const toastClass = type === "danger" ? "text-bg-danger" : "text-bg-success";
+
+    const toastElement = document.createElement("div");
+    toastElement.className = `toast align-items-center ${toastClass} border-0`;
+    toastElement.setAttribute("role", "status");
+    toastElement.setAttribute("aria-live", "polite");
+    toastElement.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+    toastContainer.appendChild(toastElement);
+
+    const toastInstance = new bootstrap.Toast(toastElement, { delay: 2200 });
+    toastInstance.show();
+
+    toastElement.addEventListener("hidden.bs.toast", function () {
+        toastElement.remove();
+    });
+}
+
+
+function openAddCourseModal() {
+    const modalTitle = document.getElementById("courseFormModalLabel");
+    modalTitle.textContent = "Thêm khóa học mới";
+    resetCourseForm();
+    courseFormModal.show();
+}
+
+
+function openEditCourseModal(course) {
+    const modalTitle = document.getElementById("courseFormModalLabel");
+    modalTitle.textContent = "Chỉnh sửa khóa học";
+
+    document.getElementById("courseFormId").value = course.id;
+    document.getElementById("courseFormTitle").value = course.title;
+    document.getElementById("courseFormCategory").value = course.category;
+    document.getElementById("courseFormInstructor").value = course.instructor;
+    document.getElementById("courseFormLessons").value = course.lessons;
+    document.getElementById("courseFormPrice").value = course.price;
+    document.getElementById("courseFormRating").value = course.rating;
+    document.getElementById("courseFormStatus").value = course.status;
+
+    const courseForm = document.getElementById("courseForm");
+    courseForm.classList.remove("was-validated");
+    courseFormModal.show();
+}
+
+
+function openDeleteConfirmModal(course) {
+    courseToDeleteId = course.id;
+    document.getElementById("deleteConfirmCourseTitle").textContent = course.title;
+
+    const courseFormModalElement = document.getElementById("courseFormModal");
+    if (courseFormModalElement.classList.contains("show")) {
+        courseFormModal.hide();
+    }
+
+    deleteConfirmModal.show();
+}
+
+
+function handleCourseFormSave() {
+    const courseForm = document.getElementById("courseForm");
+
+    if (!courseForm.checkValidity()) {
+        courseForm.classList.add("was-validated");
+        return;
+    }
+
+    const courseId = Number(document.getElementById("courseFormId").value || 0);
+    const nextCourseId = Math.max(0, ...adminCourses.map(function (course) {
+        return course.id;
+    })) + 1;
+
+    const courseData = {
+        title: document.getElementById("courseFormTitle").value.trim(),
+        category: document.getElementById("courseFormCategory").value,
+        instructor: document.getElementById("courseFormInstructor").value.trim(),
+        lessons: Number(document.getElementById("courseFormLessons").value),
+        price: Number(document.getElementById("courseFormPrice").value),
+        rating: Number(document.getElementById("courseFormRating").value),
+        status: document.getElementById("courseFormStatus").value
+    };
+
+    if (courseId) {
+        const courseIndex = adminCourses.findIndex(function (course) {
+            return course.id === courseId;
+        });
+
+        if (courseIndex !== -1) {
+            adminCourses[courseIndex] = {
+                ...adminCourses[courseIndex],
+                ...courseData,
+                id: courseId
+            };
+        }
+    } else {
+        adminCourses.unshift({
+            id: nextCourseId,
+            ...courseData
+        });
+    }
+
+    writeCoursesToStorage(adminCourses);
+    renderCoursesTable();
+    courseFormModal.hide();
+    resetCourseForm();
+    showToast(courseId ? "Course updated." : "Course created.", "success");
+}
+
+
+function handleDeleteConfirm() {
+    if (!courseToDeleteId) {
+        return;
+    }
+
+    adminCourses = adminCourses.filter(function (course) {
+        return course.id !== courseToDeleteId;
+    });
+
+    writeCoursesToStorage(adminCourses);
+    renderCoursesTable();
+    deleteConfirmModal.hide();
+    courseToDeleteId = null;
+    showToast("Course deleted.", "success");
+}
+
+
 // Xử lý sự kiện gõ nội dung vào ô tìm kiếm (tìm kiếm trực tiếp - live search).
 function handleSearchInput(event) {
     activeFilters.keyword = event.target.value;

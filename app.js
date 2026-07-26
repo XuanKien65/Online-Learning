@@ -55,7 +55,7 @@ const courses = [
 
         title: "Nền tảng HTML và CSS",
 
-        category: "Lập trình web",
+        category: "Web Dev",
 
         instructor: "Nguyễn Minh Anh",
 
@@ -95,7 +95,7 @@ const courses = [
 
         title: "JavaScript cơ bản",
 
-        category: "Lập trình web",
+        category: "Web Dev",
 
         instructor: "Trần Quốc Huy",
 
@@ -135,7 +135,7 @@ const courses = [
 
         title: "Thiết kế giao diện UI/UX cơ bản",
 
-        category: "Thiết kế",
+        category: "Design",
 
         instructor: "Lê Hoàng Lan",
 
@@ -175,7 +175,7 @@ const courses = [
 
         title: "Thiết kế Figma cho người mới",
 
-        category: "Thiết kế",
+        category: "Design",
 
         instructor: "Phạm Thu Trang",
 
@@ -215,7 +215,7 @@ const courses = [
 
         title: "Phân tích dữ liệu bằng Python",
 
-        category: "Khoa học dữ liệu",
+        category: "Data Science",
 
         instructor: "Đỗ Đức Long",
 
@@ -255,7 +255,7 @@ const courses = [
 
         title: "Trực quan hóa dữ liệu với Chart.js",
 
-        category: "Khoa học dữ liệu",
+        category: "Data Science",
 
         instructor: "Vũ Quang Nam",
 
@@ -332,17 +332,17 @@ function createCourseCard(course) {
                     </h3>
 
                     <p class="course-rating">
-                        ⭐ ${course.rating} (${course.reviews} đánh giá)
+                        <i class="bi bi-star-fill"></i> ${course.rating} (${course.reviews} đánh giá)
                     </p>
 
                     <div class="course-information">
 
                         <span>
-                            👤 ${course.instructor}
+                            <i class="bi bi-person-fill"></i> ${course.instructor}
                         </span>
 
                         <span>
-                            📚 ${course.lessons} bài học
+                            <i class="bi bi-journal-bookmark-fill"></i> ${course.lessons} bài học
                         </span>
 
                     </div>
@@ -515,7 +515,7 @@ function initProblem02() {
 
     // --- Live Search: gõ vào ô tìm kiếm, debounce 300ms ---
     searchInput.addEventListener("input", function () {
-        // Hiện/ẩn nút ✕ tuỳ vào có text hay không.
+        // Hiện/ẩn nút xóa nhanh tuỳ vào có text hay không.
         if (clearBtn) {
             if (this.value.length > 0) {
                 clearBtn.classList.remove("d-none");
@@ -529,7 +529,7 @@ function initProblem02() {
         searchDebounceTimer = setTimeout(applySearchFilterSort, 300);
     });
 
-    // --- Nút ✕: xóa nhanh, reset ngay lập tức (không debounce) ---
+    // --- Nút xóa nhanh: reset ngay lập tức (không debounce) ---
     if (clearBtn) {
         clearBtn.addEventListener("click", function () {
             searchInput.value = "";
