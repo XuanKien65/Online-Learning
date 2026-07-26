@@ -118,91 +118,278 @@ function renderCourseDescription(course) {
     - Bài kiểm tra cuối mỗi phần (tối thiểu 3 câu hỏi trắc nghiệm), chấm điểm và lưu kết quả Đạt/Không đạt.
 */
 
-// Ngân hàng câu hỏi cho từng phần học, mỗi khóa học đều dùng chung 3 phần nên dùng chung ngân hàng câu hỏi theo chỉ số phần.
-const quizBank = [
-    {
-        questions: [
-            {
-                question: "HTML là viết tắt của cụm từ nào?",
-                options: [
-                    "HyperText Markup Language",
-                    "HighText Machine Language",
-                    "Hyperlink Text Markup Language",
-                    "Không có đáp án nào đúng"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Thẻ HTML nào dùng để tạo một đoạn văn bản?",
-                options: ["<para>", "<p>", "<pg>", "<text>"],
-                correctIndex: 1
-            },
-            {
-                question: "CSS được dùng chủ yếu để làm gì trong một trang web?",
-                options: [
-                    "Xử lý logic phía máy chủ",
-                    "Định dạng giao diện và bố cục trang",
-                    "Lưu trữ dữ liệu người dùng",
-                    "Nén dữ liệu hình ảnh"
-                ],
-                correctIndex: 1
-            }
-        ]
-    },
-    {
-        questions: [
-            {
-                question: "Từ khóa nào dùng để khai báo một biến có thể thay đổi giá trị trong JavaScript?",
-                options: ["const", "let", "final", "static"],
-                correctIndex: 1
-            },
-            {
-                question: "Phương thức nào dùng để chọn một phần tử theo id trong DOM?",
-                options: [
-                    "document.querySelectorAll",
-                    "document.getElementById",
-                    "document.createElement",
-                    "document.getElementsByClass"
-                ],
-                correctIndex: 1
-            },
-            {
-                question: "Toán tử nào so sánh bằng cả giá trị lẫn kiểu dữ liệu?",
-                options: ["==", "=", "===", "!="],
-                correctIndex: 2
-            }
-        ]
-    },
-    {
-        questions: [
-            {
-                question: "localStorage dùng để làm gì?",
-                options: [
-                    "Gửi email tự động",
-                    "Lưu dữ liệu ngay trên trình duyệt của người dùng",
-                    "Kết nối trực tiếp tới cơ sở dữ liệu máy chủ",
-                    "Tăng tốc độ đường truyền mạng"
-                ],
-                correctIndex: 1
-            },
-            {
-                question: "Sự kiện nào được gọi khi người dùng nhấn vào một phần tử?",
-                options: ["onchange", "onclick", "onload", "onsubmit"],
-                correctIndex: 1
-            },
-            {
-                question: "Cách nào dùng để lặp qua từng phần tử của một mảng trong JavaScript?",
-                options: [
-                    "array.forEach()",
-                    "array.toString()",
-                    "array.parse()",
-                    "array.stringify()"
-                ],
-                correctIndex: 0
-            }
-        ]
-    }
-];
+// Ngân hàng câu hỏi theo từng danh mục khóa học, mỗi danh mục có 3 phần khớp với 3 phần chương trình học.
+const quizBankByCategory = {
+    "Lập trình web": [
+        {
+            questions: [
+                {
+                    question: "HTML là viết tắt của cụm từ nào?",
+                    options: [
+                        "HyperText Markup Language",
+                        "HighText Machine Language",
+                        "Hyperlink Text Markup Language",
+                        "Không có đáp án nào đúng"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Thẻ HTML nào dùng để tạo một đoạn văn bản?",
+                    options: ["<para>", "<p>", "<pg>", "<text>"],
+                    correctIndex: 1
+                },
+                {
+                    question: "CSS được dùng chủ yếu để làm gì trong một trang web?",
+                    options: [
+                        "Xử lý logic phía máy chủ",
+                        "Định dạng giao diện và bố cục trang",
+                        "Lưu trữ dữ liệu người dùng",
+                        "Nén dữ liệu hình ảnh"
+                    ],
+                    correctIndex: 1
+                }
+            ]
+        },
+        {
+            questions: [
+                {
+                    question: "Từ khóa nào dùng để khai báo một biến có thể thay đổi giá trị trong JavaScript?",
+                    options: ["const", "let", "final", "static"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Phương thức nào dùng để chọn một phần tử theo id trong DOM?",
+                    options: [
+                        "document.querySelectorAll",
+                        "document.getElementById",
+                        "document.createElement",
+                        "document.getElementsByClass"
+                    ],
+                    correctIndex: 1
+                },
+                {
+                    question: "Toán tử nào so sánh bằng cả giá trị lẫn kiểu dữ liệu?",
+                    options: ["==", "=", "===", "!="],
+                    correctIndex: 2
+                }
+            ]
+        },
+        {
+            questions: [
+                {
+                    question: "localStorage dùng để làm gì?",
+                    options: [
+                        "Gửi email tự động",
+                        "Lưu dữ liệu ngay trên trình duyệt của người dùng",
+                        "Kết nối trực tiếp tới cơ sở dữ liệu máy chủ",
+                        "Tăng tốc độ đường truyền mạng"
+                    ],
+                    correctIndex: 1
+                },
+                {
+                    question: "Sự kiện nào được gọi khi người dùng nhấn vào một phần tử?",
+                    options: ["onchange", "onclick", "onload", "onsubmit"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Cách nào dùng để lặp qua từng phần tử của một mảng trong JavaScript?",
+                    options: [
+                        "array.forEach()",
+                        "array.toString()",
+                        "array.parse()",
+                        "array.stringify()"
+                    ],
+                    correctIndex: 0
+                }
+            ]
+        }
+    ],
+
+    "Thiết kế": [
+        {
+            questions: [
+                {
+                    question: "UI là viết tắt của cụm từ nào?",
+                    options: [
+                        "User Interface",
+                        "User Information",
+                        "Unified Interface",
+                        "User Interaction"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "UX chủ yếu tập trung vào điều gì?",
+                    options: [
+                        "Tốc độ xử lý của máy chủ",
+                        "Trải nghiệm và cảm nhận của người dùng khi sử dụng sản phẩm",
+                        "Cấu trúc cơ sở dữ liệu",
+                        "Bảo mật hệ thống"
+                    ],
+                    correctIndex: 1
+                },
+                {
+                    question: "Công cụ nào sau đây được dùng phổ biến để thiết kế giao diện?",
+                    options: ["Figma", "MySQL", "Node.js", "Docker"],
+                    correctIndex: 0
+                }
+            ]
+        },
+        {
+            questions: [
+                {
+                    question: "Trong thiết kế, wireframe dùng để làm gì?",
+                    options: [
+                        "Phác thảo bố cục cơ bản của giao diện",
+                        "Viết mã nguồn cho website",
+                        "Kiểm thử hiệu năng máy chủ",
+                        "Quản lý phiên bản code"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Yếu tố nào KHÔNG thuộc nguyên tắc thiết kế giao diện cơ bản?",
+                    options: ["Màu sắc", "Kiểu chữ", "Khoảng cách (spacing)", "Chỉ số CPU"],
+                    correctIndex: 3
+                },
+                {
+                    question: "Prototype trong thiết kế UI/UX có nghĩa là gì?",
+                    options: [
+                        "Nguyên mẫu tương tác mô phỏng sản phẩm thật",
+                        "Tệp âm thanh minh họa",
+                        "Báo cáo doanh thu",
+                        "Mã nguồn backend"
+                    ],
+                    correctIndex: 0
+                }
+            ]
+        },
+        {
+            questions: [
+                {
+                    question: "Bước nào thường thực hiện sau cùng trong quy trình thiết kế một dự án?",
+                    options: [
+                        "Lên ý tưởng",
+                        "Phác thảo",
+                        "Kiểm thử khả năng sử dụng (usability test)",
+                        "Không có bước nào"
+                    ],
+                    correctIndex: 2
+                },
+                {
+                    question: "Component có thể tái sử dụng trong Figma giúp ích gì?",
+                    options: [
+                        "Giữ giao diện đồng nhất và tiết kiệm thời gian chỉnh sửa",
+                        "Tăng tốc độ mạng",
+                        "Giảm dung lượng ổ cứng",
+                        "Không có tác dụng gì"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Kiểm thử khả năng sử dụng (usability testing) nhằm mục đích gì?",
+                    options: [
+                        "Đánh giá xem người dùng thật có dễ sử dụng giao diện hay không",
+                        "Kiểm tra tốc độ xử lý của máy chủ",
+                        "Đo dung lượng file thiết kế",
+                        "Kiểm tra bảo mật cơ sở dữ liệu"
+                    ],
+                    correctIndex: 0
+                }
+            ]
+        }
+    ],
+
+    "Khoa học dữ liệu": [
+        {
+            questions: [
+                {
+                    question: "Python thường được dùng trong phân tích dữ liệu vì lý do gì?",
+                    options: [
+                        "Cú pháp dễ đọc và có nhiều thư viện hỗ trợ phân tích dữ liệu",
+                        "Chỉ chạy được trên Windows",
+                        "Không hỗ trợ dữ liệu số lớn",
+                        "Là ngôn ngữ đánh dấu (markup)"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Thư viện nào dùng để xử lý dữ liệu dạng bảng trong Python?",
+                    options: ["Pandas", "Bootstrap", "Express", "jQuery"],
+                    correctIndex: 0
+                },
+                {
+                    question: "NumPy chủ yếu hỗ trợ điều gì?",
+                    options: [
+                        "Làm việc hiệu quả với mảng và tính toán số học",
+                        "Thiết kế giao diện web",
+                        "Gửi email tự động",
+                        "Quản lý cơ sở dữ liệu NoSQL"
+                    ],
+                    correctIndex: 0
+                }
+            ]
+        },
+        {
+            questions: [
+                {
+                    question: "Trong Pandas, cấu trúc dữ liệu 2 chiều phổ biến nhất được gọi là gì?",
+                    options: ["DataFrame", "Series", "Array", "Object"],
+                    correctIndex: 0
+                },
+                {
+                    question: "Làm sạch dữ liệu (data cleaning) thường bao gồm công việc nào?",
+                    options: [
+                        "Xử lý giá trị thiếu và dữ liệu trùng lặp",
+                        "Thiết kế logo",
+                        "Viết CSS cho trang web",
+                        "Cấu hình DNS"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Hàm nào trong Pandas thường dùng để đọc file CSV?",
+                    options: ["read_csv()", "fetch_csv()", "open_csv()", "load_csv()"],
+                    correctIndex: 0
+                }
+            ]
+        },
+        {
+            questions: [
+                {
+                    question: "Biểu đồ nào phù hợp để so sánh giá trị giữa nhiều danh mục?",
+                    options: [
+                        "Biểu đồ cột (bar chart)",
+                        "Biểu đồ chưa xác định",
+                        "Ảnh tĩnh",
+                        "Không có loại nào phù hợp"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Thư viện nào dùng để trực quan hóa dữ liệu trên web bằng JavaScript?",
+                    options: ["Chart.js", "Pandas", "NumPy", "Flask"],
+                    correctIndex: 0
+                },
+                {
+                    question: "Mục tiêu chính của trực quan hóa dữ liệu là gì?",
+                    options: [
+                        "Giúp người xem hiểu thông tin nhanh và trực quan hơn",
+                        "Tăng dung lượng file dữ liệu",
+                        "Làm chậm quá trình xử lý dữ liệu",
+                        "Ẩn bớt thông tin quan trọng"
+                    ],
+                    correctIndex: 0
+                }
+            ]
+        }
+    ]
+};
+
+// Lấy đúng bộ câu hỏi theo danh mục của khóa học, dùng bộ Lập trình web làm mặc định nếu danh mục chưa có quiz riêng.
+function getQuizBank(course) {
+    return quizBankByCategory[course.category] || quizBankByCategory["Lập trình web"];
+}
 
 // Điểm tối thiểu để coi là Đạt bài kiểm tra (theo đề bài: từ 70% trở lên).
 const QUIZ_PASS_PERCENT = 70;
@@ -395,7 +582,7 @@ function optionLetter(optionIndex) {
 
 // Vẽ form bài kiểm tra (câu hỏi + các đáp án radio + nút nộp bài) cho một phần học.
 function renderQuizForm(course, sectionIndex) {
-    const sectionQuiz = quizBank[sectionIndex];
+    const sectionQuiz = getQuizBank(course)[sectionIndex];
     const sectionTitle = course.curriculum[sectionIndex].title;
 
     const questionsHtml = sectionQuiz.questions
@@ -487,7 +674,7 @@ function openNextSection(sectionIndex) {
 
 // Chấm điểm bài kiểm tra, hiển thị kết quả từng câu (đúng màu xanh, sai màu đỏ) và thông báo Đạt/Không đạt.
 function handleQuizSubmit(course, sectionIndex, panelEl) {
-    const sectionQuiz = quizBank[sectionIndex];
+    const sectionQuiz = getQuizBank(course)[sectionIndex];
     let correctCount = 0;
 
     const resultQuestionsHtml = sectionQuiz.questions
