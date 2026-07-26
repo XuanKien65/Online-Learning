@@ -55,7 +55,7 @@ const courses = [
 
         title: "Nền tảng HTML và CSS",
 
-        category: "Lập trình web",
+        category: "Web Dev",
 
         instructor: "Nguyễn Minh Anh",
 
@@ -95,7 +95,7 @@ const courses = [
 
         title: "JavaScript cơ bản",
 
-        category: "Lập trình web",
+        category: "Web Dev",
 
         instructor: "Trần Quốc Huy",
 
@@ -135,7 +135,7 @@ const courses = [
 
         title: "Thiết kế giao diện UI/UX cơ bản",
 
-        category: "Thiết kế",
+        category: "Design",
 
         instructor: "Lê Hoàng Lan",
 
@@ -175,7 +175,7 @@ const courses = [
 
         title: "Thiết kế Figma cho người mới",
 
-        category: "Thiết kế",
+        category: "Design",
 
         instructor: "Phạm Thu Trang",
 
@@ -215,7 +215,7 @@ const courses = [
 
         title: "Phân tích dữ liệu bằng Python",
 
-        category: "Khoa học dữ liệu",
+        category: "Data Science",
 
         instructor: "Đỗ Đức Long",
 
@@ -255,7 +255,7 @@ const courses = [
 
         title: "Trực quan hóa dữ liệu với Chart.js",
 
-        category: "Khoa học dữ liệu",
+        category: "Data Science",
 
         instructor: "Vũ Quang Nam",
 

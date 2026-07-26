@@ -120,7 +120,7 @@ function renderCourseDescription(course) {
 
 // Ngân hàng câu hỏi theo từng danh mục khóa học, mỗi danh mục có 3 phần khớp với 3 phần chương trình học.
 const quizBankByCategory = {
-    "Lập trình web": [
+    "Web Dev": [
         {
             questions: [
                 {
@@ -205,7 +205,7 @@ const quizBankByCategory = {
         }
     ],
 
-    "Thiết kế": [
+    "Design": [
         {
             questions: [
                 {
@@ -300,7 +300,7 @@ const quizBankByCategory = {
         }
     ],
 
-    "Khoa học dữ liệu": [
+    "Data Science": [
         {
             questions: [
                 {
@@ -386,9 +386,9 @@ const quizBankByCategory = {
     ]
 };
 
-// Lấy đúng bộ câu hỏi theo danh mục của khóa học, dùng bộ Lập trình web làm mặc định nếu danh mục chưa có quiz riêng.
+// Lấy đúng bộ câu hỏi theo danh mục của khóa học, dùng bộ Web Dev làm mặc định nếu danh mục chưa có quiz riêng.
 function getQuizBank(course) {
-    return quizBankByCategory[course.category] || quizBankByCategory["Lập trình web"];
+    return quizBankByCategory[course.category] || quizBankByCategory["Web Dev"];
 }
 
 // Điểm tối thiểu để coi là Đạt bài kiểm tra (theo đề bài: từ 70% trở lên).
